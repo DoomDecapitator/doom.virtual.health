@@ -1,0 +1,25 @@
+{
+  "anvil_cost": 1,
+  "description": "",
+  "max_cost": {"base": 0, "per_level_above_first": 0},
+  "max_level": 255,
+  "min_cost": {"base": 0, "per_level_above_first": 0},
+  "slots": ["saddle", "mainhand"],
+  "supported_items": "minecraft:saddle",
+  "weight": 1,
+  "effects": {
+    "minecraft:tick": [{
+      "requirements": [{
+        "condition": "minecraft:entity_properties",
+        "entity": "this",
+        "predicate": {
+          "nbt": "{Tags:[\"virtual_health_entity\"]}"
+        }
+      }],
+      "effect": {
+        "type": "minecraft:run_function",
+        "function": "doom.virtual.health:api/sync/equipment_bonus"
+      }
+    }]
+  }
+}

@@ -1,0 +1,1 @@
+$damage @s 2147483647 minecraft:generic by $(uid_hex)

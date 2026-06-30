@@ -1,0 +1,6 @@
+{
+  "values": [
+    "doom.virtual.health:core/main",
+    "doom.bossbar:core/main"
+  ]
+}
