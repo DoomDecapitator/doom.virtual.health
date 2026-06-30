@@ -1,0 +1,41 @@
+/// Storage: doom.vh:ctx — VH system runtime data
+dispatch minecraft:storage["doom.vh:ctx"] to struct{
+    /// API input parameters for create/set/add operations
+    with?: struct{
+        /// Max health in HP (auto-converted to mHP)
+        max_health: int,
+        /// Current health in HP (auto-converted to mHP)
+        health: int,
+        /// Callback command on VH death
+        on_death?: #[command] string,
+    },
+    /// UUID hex string for kill attribution
+    uid_hex?: string,
+    /// Death callback command (from trigger_death)
+    on_death?: #[command] string,
+    /// UUID int components for hex conversion
+    uid0?: int,
+    uid1?: int,
+    uid2?: int,
+    uid3?: int,
+    /// Invulnerability state: 0 = vulnerable, 1 = invulnerable
+    state?: byte @ 0..1,
+    /// Any other runtime data (e.g. _ for macro params)
+    [string]: any,
+}
+
+/// Storage: doom.vh:const — read-only constants
+dispatch minecraft:storage["doom.vh:const"] to struct{
+    /// 256-element hex lookup table ("00".."ff")
+    hex_chars: [string],
+}
+
+/// Custom data for /summon {data:{dvh:{...}}} — auto_init VH
+dispatch mcdoc:custom_data["dvh"] to struct{
+    /// Max health in HP (string required by /summon)
+    max_health: string,
+    /// Current health in HP (string required by /summon)
+    health: string,
+    /// Callback command on VH death (string, without /)
+    on_death?: #[command] string,
+}

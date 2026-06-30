@@ -1,0 +1,9 @@
+scoreboard players set #1000 dvh.temp 1000
+scoreboard players set #t22 dvh.temp 22
+scoreboard players set #zero dvh.temp 0
+scoreboard players set #t5 dvh.temp 5
+scoreboard players set #t50 dvh.temp 50
+scoreboard players set #11 dvh.temp 11
+scoreboard players set #1024 dvh.temp 1024
+scoreboard players set #baseline dvh.temp 1126400
+scoreboard players set #100 dvh.temp 100
