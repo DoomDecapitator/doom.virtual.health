@@ -5,185 +5,307 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Doom Virtual Health v3.0</title>
 <style>
-  body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.7; color: #222; }
-  h1 { color: #c0392b; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-  h2 { color: #333; margin-top: 36px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
-  h3 { color: #555; margin-top: 24px; }
-  code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: .9em; }
-  pre { background: #f8f8f8; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: .85em; border: 1px solid #eee; }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: .9em; }
-  th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-  th { background: #f4f4f4; font-weight: 600; }
-  .badge { display: inline-block; background: #c0392b; color: #fff; padding: 2px 10px; border-radius: 12px; font-size: .8em; margin-right: 4px; }
-  .badge-blue { background: #2980b9; }
-  .badge-gray { background: #777; }
-  a { color: #2980b9; text-decoration: none; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    line-height: 1.7;
+  }
+  .container { max-width: 860px; margin: 0 auto; padding: 40px 24px; }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid #21262d;
+    padding-bottom: 32px;
+    margin-bottom: 32px;
+  }
+  h1 { font-size: 2em; color: #f0f6fc; font-weight: 700; }
+  h1 span.subtitle { color: #8b949e; font-weight: 400; font-size: .6em; display: block; margin-top: 4px; }
+  .badges { margin-top: 12px; }
+  .badge {
+    display: inline-block; padding: 3px 12px; border-radius: 20px;
+    font-size: .78em; font-weight: 500; margin-right: 6px;
+  }
+  .badge-red { background: #da3633; color: #fff; }
+  .badge-blue { background: #1f6feb; color: #fff; }
+  .badge-gray { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
+  header p { color: #8b949e; margin-top: 12px; font-size: .95em; max-width: 700px; }
+
+  /* Sections */
+  section { margin-bottom: 40px; }
+  h2 {
+    font-size: 1.4em; color: #f0f6fc; font-weight: 600;
+    padding-bottom: 8px; border-bottom: 1px solid #21262d;
+    margin-bottom: 16px;
+  }
+  h3 { font-size: 1.1em; color: #c9d1d9; font-weight: 600; margin-bottom: 10px; margin-top: 20px; }
+
+  /* Architecture */
+  .arch-box {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 20px; font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: .9em; text-align: center; line-height: 2.2;
+  }
+  .arch-box .highlight { color: #da3633; font-weight: 600; }
+  .arch-box .arrow { color: #484f58; }
+  .arch-box .dep { color: #58a6ff; }
+
+  /* Code */
+  pre {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 16px; overflow-x: auto; font-size: .82em;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    line-height: 1.6; margin: 12px 0;
+  }
+  code {
+    background: #21262d; padding: 2px 6px; border-radius: 4px;
+    font-size: .88em; font-family: 'Fira Code', 'Consolas', monospace;
+  }
+  pre code { background: none; padding: 0; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; margin: 12px 0; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: .85em;
+  }
+  th {
+    background: #161b22; color: #8b949e; font-weight: 600;
+    padding: 10px 12px; text-align: left; border: 1px solid #30363d;
+    white-space: nowrap;
+  }
+  td {
+    padding: 9px 12px; border: 1px solid #30363d;
+  }
+  tr:hover td { background: #1c2128; }
+  td:first-child { white-space: nowrap; color: #58a6ff; font-weight: 500; }
+  td:nth-child(2) { color: #7ee787; }
+  td:nth-child(3) { font-family: 'Fira Code', 'Consolas', monospace; font-size: .92em; }
+
+  /* Lists */
+  ul, ol { padding-left: 24px; margin: 12px 0; }
+  li { margin-bottom: 6px; }
+  a { color: #58a6ff; text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .arch { text-align: center; padding: 16px; font-family: monospace; font-size: 1.1em; line-height: 2; background: #f8f8f8; border-radius: 6px; }
+
+  /* Notes */
+  .notes { margin-top: 12px; }
+  .notes li::marker { color: #da3633; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid #21262d; padding-top: 24px; margin-top: 48px;
+    text-align: center; color: #484f58; font-size: .85em;
+  }
+
+  /* Damage flow */
+  .flow {
+    background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+    padding: 16px 20px; font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: .82em; line-height: 2; margin: 12px 0;
+  }
+  .flow .arr { color: #484f58; }
+  .flow .val { color: #7ee787; }
+  .flow .label { color: #8b949e; }
 </style>
 </head>
 <body>
 
-<h1>Doom Virtual Health <span class="badge">v3.0</span><span class="badge badge-blue">1.21.6+</span></h1>
-<p>为 Minecraft 实体注入<strong>独立于原版血量的虚拟血量系统</strong>，自动映射到 Bossbar。支持 auto_init（<code>/summon</code> 直接带 NBT）、高频 tick 伤害检测、自定义死亡回调、百分比血量判定、无敌控制、余数精度补偿。</p>
+<div class="container">
 
-<h2>架构</h2>
-<div class="arch">
-doom.virtual.health &nbsp;← 完全独立<br>
-&nbsp;&nbsp;&nbsp;&nbsp;│<br>
-&nbsp;&nbsp;&nbsp;&nbsp;▼ (依赖: scoreboard + tag)<br>
-doom.bossbar &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;← 依赖 DVH，自动同步血条
-</div>
+<header>
+  <h1>
+    Doom Virtual Health
+    <span class="subtitle">v3.0 &mdash; Minecraft 1.21.6+</span>
+  </h1>
+  <div class="badges">
+    <span class="badge badge-red">v3.0</span>
+    <span class="badge badge-blue">1.21.6+</span>
+    <span class="badge badge-gray">纯原版</span>
+    <span class="badge badge-gray">零依赖</span>
+  </div>
+  <p>为 Minecraft 实体注入独立于原版血量的虚拟血量系统，自动映射到 Bossbar。支持 auto_init、高频 tick 伤害检测、自定义死亡回调、百分比血量判定、无敌控制、余数精度补偿。</p>
+</header>
 
-<h2>快速开始</h2>
+<!-- 架构 -->
+<section>
+  <h2>架构</h2>
+  <div class="arch-box">
+    <span class="highlight">doom.virtual.health</span> <span class="arrow">← 完全独立</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">│</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="arrow">▼</span> <span class="label">(依赖: scoreboard + tag)</span><br>
+    <span class="dep">doom.bossbar</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">← 依赖 DVH，自动同步血条</span>
+  </div>
+</section>
 
-<h3>auto_init（推荐）</h3>
-<pre># summon 时直接写 data.dvh → 下一 tick 自动初始化
-/summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:"5000",health:"5000"}},NoAI:1b}
+<!-- 快速开始 -->
+<section>
+  <h2>快速开始</h2>
 
-# 创建 Bossbar
-/execute as @n[tag=virtual_health_entity] run \
-  function doom.bossbar:api/create {with:{name:'"Boss"',color:red,style:progress,visible:"true",targets:"@a"}}
+  <h3>auto_init（推荐）</h3>
+  <pre><code>/summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:"5000",health:"5000"}},NoAI:1b}</code></pre>
+  <pre><code>/execute as @n[tag=virtual_health_entity] run \
+  function doom.bossbar:api/create {with:{name:'"Boss"',color:red,style:progress,visible:"true",targets:"@a"}}</code></pre>
+  <pre><code>/execute as @n[tag=virtual_health_entity] run \
+  function doom.virtual.health:api/add_health {points:-500}</code></pre>
 
-# 扣血 / 治疗
-/execute as @n[tag=virtual_health_entity] run \
-  function doom.virtual.health:api/add_health {points:-500}
+  <h3>传统方式</h3>
+  <pre><code>/execute as @n run function doom.virtual.health:api/create {with:{max_health:2000,health:2000}}</code></pre>
+</section>
 
-# 无敌
-/execute as @n[tag=virtual_health_entity] run \
-  function doom.virtual.health:api/set_invulnerable {state:1b}</pre>
+<!-- 伤害检测原理 -->
+<section>
+  <h2>伤害检测原理</h2>
+  <div class="flow">
+    <span class="label">Health = 512f</span>（Resistance IV 保护）<br>
+    <span class="arr">↓</span> 受到攻击 → Health 下降<br>
+    <span class="arr">↓</span> Tick 检测: <span class="val">temp = Health × 2200</span>，对比 <span class="val">baseline = 1126400</span><br>
+    <span class="arr">↓</span> <span class="val">delta = baseline - temp</span><br>
+    <span class="arr">↓</span> <span class="val">(delta × 50 + 11) / 22</span> → mHP<br>
+    <span class="arr">↓</span> <span class="val">mHP × damage_mult / 1000</span>（t1+t2 防溢出）<br>
+    <span class="arr">↓</span> <span class="val">dvh.health −= mHP</span> | 余数累加到 <span class="val">dvh.rem_damage</span><br>
+    <span class="arr">↓</span> Health 复位 512f<br>
+    <span class="arr">↓</span> <span class="val">dvh.health ≤ 0</span> → <span class="highlight">trigger_death</span>
+  </div>
+  <p>精度 <strong>0.001 HP</strong>（mHP），余数累计补偿截断。</p>
 
-<h3>api/create（传统方式）</h3>
-<pre>/execute as @n run \
-  function doom.virtual.health:api/create {with:{max_health:2000,health:2000}}
+  <table>
+    <tr><th>damage_mult</th><th>效果</th></tr>
+    <tr><td>1000</td><td>100% 伤害（默认）</td></tr>
+    <tr><td>500</td><td>50% 伤害</td></tr>
+    <tr><td>2000</td><td>200% 伤害（弱点）</td></tr>
+  </table>
+</section>
 
-/execute as @n[tag=virtual_health_entity] run \
-  function doom.bossbar:api/create {with:{name:'"Boss"',color:red,style:progress,visible:"true",targets:"@a"}}</pre>
+<!-- API -->
+<section>
+  <h2>API 参考</h2>
 
-<h2>伤害检测原理</h2>
-<pre>Health = 512f（Resistance IV 保护）
-  ↓ 受到攻击 → Health 下降
-  ↓ Tick 检测: temp = Health × 2200, 对比 baseline = 512×2200
-  ↓ delta = baseline - temp
-  ↓ delta × 50 + 11 / 22 → mHP（×1000 精度）
-  ↓ mHP × damage_mult / 1000 → 实际伤害（t1+t2 防溢出）
-  ↓ dvh.health -= mHP
-  ↓ dvh.rem_damage += 余数（下次进位）
-  ↓ Health 复位 512f
-  ↓ dvh.health ≤ 0 → trigger_death</pre>
+  <h3>doom.virtual.health</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>函数</th><th>宏</th><th>参数</th><th>说明</th></tr>
+    <tr><td>api/create</td><td>⚡</td><td>{with:{max_health, health, on_death?}}</td><td>注入虚拟血量</td></tr>
+    <tr><td>api/remove</td><td>⚡</td><td>{with:{kill:1b/0b}}</td><td>剥离虚拟血量（可选击杀）</td></tr>
+    <tr><td>api/add_health</td><td>⚡</td><td>{points:int}</td><td>增减血量</td></tr>
+    <tr><td>api/set_health</td><td>⚡</td><td>{health:int}</td><td>强制设定血量</td></tr>
+    <tr><td>api/set_max_health</td><td>⚡</td><td>{max_health:int}</td><td>设定最大血量</td></tr>
+    <tr><td>api/add_max_health</td><td>⚡</td><td>{points:int}</td><td>增减最大血量</td></tr>
+    <tr><td>api/get_health</td><td>⚡</td><td>{out, scale}</td><td>导出血量</td></tr>
+    <tr><td>api/get_max_health</td><td>⚡</td><td>{out, scale}</td><td>导出最大血量</td></tr>
+    <tr><td>api/get_stats</td><td>⚡</td><td>{damage_out, healing_out, scale}</td><td>导出统计</td></tr>
+    <tr><td>api/get_percentage</td><td>⚡</td><td>{out}</td><td>导出百分比 [0,100]</td></tr>
+    <tr><td>api/set_invulnerable</td><td>⚡</td><td>{state:1b/0b}</td><td>设置无敌</td></tr>
+    <tr><td>api/set_damage_mult</td><td>⚡</td><td>{mult:int}</td><td>伤害比例</td></tr>
+    <tr><td>api/apply_trigger</td><td></td><td>—</td><td>分配 vitality trigger</td></tr>
+    <tr><td>predicate/is_invulnerable</td><td></td><td>—</td><td>return 1 如果无敌</td></tr>
+    <tr><td>predicate/above_percentage</td><td></td><td>—</td><td>return 1 高于 @s dvh.pp%</td></tr>
+    <tr><td>predicate/below_percentage</td><td></td><td>—</td><td>return 1 低于 @s dvh.pp%</td></tr>
+    <tr><td>predicate/between_percentage</td><td></td><td>—</td><td>return 1 在 @s dvh.pp~@s dvh.pp_max% 内</td></tr>
+  </table>
+  </div>
 
-<p><strong>精度：0.001 HP</strong>（mHP），余数累计补偿截断。</p>
+  <h3>doom.bossbar</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>函数</th><th>宏</th><th>说明</th></tr>
+    <tr><td>api/create</td><td>⚡</td><td>创建血条，重复调用 return fail</td></tr>
+    <tr><td>api/remove</td><td></td><td>销毁血条</td></tr>
+    <tr><td>api/sync_dvh</td><td></td><td>同步血量到 Bossbar</td></tr>
+  </table>
+  </div>
 
-<p><code>dvh.damage_mult</code> 默认 1000 = 100%，可调整：<br>
-<code>mult=500</code> → 50% 伤害（等效原 Resistance IV），<code>mult=2000</code> → 200% 伤害（弱点）</p>
+  <h3>api/create 参数</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>参数</th><th>类型</th><th>默认</th><th>说明</th></tr>
+    <tr><td>name</td><td>string</td><td>"Boss"</td><td>血条显示名称</td></tr>
+    <tr><td>color</td><td>string</td><td>"white"</td><td>颜色</td></tr>
+    <tr><td>style</td><td>string</td><td>"progress"</td><td>样式</td></tr>
+    <tr><td>visible</td><td>string</td><td>"true"</td><td>可见性</td></tr>
+    <tr><td>targets</td><td>string</td><td>"@a"</td><td>可见玩家</td></tr>
+    <tr><td>persist</td><td>bool</td><td>false</td><td>死亡后保留血条</td></tr>
+  </table>
+  </div>
 
-<h2>API</h2>
-
-<h3>doom.virtual.health</h3>
-<table>
-  <tr><th>函数</th><th>宏</th><th>参数</th><th>说明</th></tr>
-  <tr><td>api/create</td><td>⚡</td><td>{with:{max_health, health, on_death?}}</td><td>注入虚拟血量</td></tr>
-  <tr><td>api/remove</td><td>⚡</td><td>{with:{kill:1b/0b}}</td><td>剥离虚拟血量（可选击杀）</td></tr>
-  <tr><td>api/add_health</td><td>⚡</td><td>{points:int}</td><td>增减血量，正=治疗/负=伤害</td></tr>
-  <tr><td>api/set_health</td><td>⚡</td><td>{health:int}</td><td>强制设定血量，≤0 触发死亡</td></tr>
-  <tr><td>api/set_max_health</td><td>⚡</td><td>{max_health:int}</td><td>设定最大血量</td></tr>
-  <tr><td>api/add_max_health</td><td>⚡</td><td>{points:int}</td><td>增减最大血量</td></tr>
-  <tr><td>api/get_health</td><td>⚡</td><td>{out, scale}</td><td>导出血量 ÷scale</td></tr>
-  <tr><td>api/get_max_health</td><td>⚡</td><td>{out, scale}</td><td>导出最大血量 ÷scale</td></tr>
-  <tr><td>api/get_stats</td><td>⚡</td><td>{damage_out, healing_out, scale}</td><td>导出统计数据 ÷scale</td></tr>
-  <tr><td>api/get_percentage</td><td>⚡</td><td>{out}</td><td>导出当前血量百分比 [0,100]</td></tr>
-  <tr><td>api/set_invulnerable</td><td>⚡</td><td>{state:1b/0b}</td><td>设置无敌状态</td></tr>
-  <tr><td>api/set_damage_mult</td><td>⚡</td><td>{mult:int}</td><td>设置伤害比例 (×1000, 默认1000=100%)</td></tr>
-  <tr><td>api/apply_trigger</td><td></td><td>—</td><td>按实体类型分配 vitality trigger 槽位</td></tr>
-  <tr><td>predicate/is_invulnerable</td><td></td><td>—</td><td>return 1 如果无敌</td></tr>
-  <tr><td>predicate/above_percentage</td><td></td><td>—</td><td>return 1 如果血量高于 @s dvh.pp%</td></tr>
-  <tr><td>predicate/below_percentage</td><td></td><td>—</td><td>return 1 如果血量低于 @s dvh.pp%</td></tr>
-  <tr><td>predicate/between_percentage</td><td></td><td>—</td><td>return 1 如果在 @s dvh.pp~@s dvh.pp_max% 内</td></tr>
-</table>
-
-<h3>doom.bossbar</h3>
-<table>
-  <tr><th>函数</th><th>宏</th><th>说明</th></tr>
-  <tr><td>api/create</td><td>⚡</td><td>创建血条，重复调用 return fail</td></tr>
-  <tr><td>api/remove</td><td></td><td>销毁血条</td></tr>
-  <tr><td>api/sync_dvh</td><td></td><td>手动同步血量到 Bossbar（tick 自动调用）</td></tr>
-</table>
-
-<p><b>api/create 参数：</b></p>
-<table>
-  <tr><th>参数</th><th>类型</th><th>默认</th><th>说明</th></tr>
-  <tr><td>name</td><td>string (JSON)</td><td>"Boss"</td><td>血条显示名称</td></tr>
-  <tr><td>color</td><td>string</td><td>"white"</td><td>颜色</td></tr>
-  <tr><td>style</td><td>string</td><td>"progress"</td><td>样式</td></tr>
-  <tr><td>visible</td><td>string</td><td>"true"</td><td>可见性</td></tr>
-  <tr><td>targets</td><td>string</td><td>"@a"</td><td>可见玩家选择器</td></tr>
-  <tr><td>persist</td><td>bool</td><td>false</td><td>实体死亡后是否保留血条</td></tr>
-</table>
-
-<h3>scale 用法</h3>
-<pre># scale=1 → mHP 原始值
-/execute as @n[tag=vh] run \
+  <h3>scale 用法</h3>
+  <pre><code>/execute as @n[tag=vh] run \
   function doom.virtual.health:api/get_health {out:"#hp",scale:1}
-# #hp = 2000000
-
-# scale=1000 → HP
-/execute as @n[tag=vh] run \
+  # #hp = 2000000 (mHP 原始值)</code></pre>
+  <pre><code>/execute as @n[tag=vh] run \
   function doom.virtual.health:api/get_health {out:"#hp",scale:1000}
-# #hp = 2000</pre>
+  # #hp = 2000 (HP)</code></pre>
 
-<h3>auto_init</h3>
-<p><code>/summon</code> 时写入 <code>data.dvh</code>，下一 tick 自动初始化：</p>
-<pre>/summon minecraft:zombie ~ ~ ~ {
+  <h3>auto_init</h3>
+  <pre><code>/summon minecraft:zombie ~ ~ ~ {
   data:{dvh:{max_health:"2000", health:"2000", on_death:"say died"}},
   NoAI:1b
-}</pre>
-<p>自动补全（需 Spyglass + mcdoc）：<code>data:{dvh:{max_health:"", health:""}}</code></p>
+}</code></pre>
+  <p>自动补全（需 Spyglass + mcdoc）：<code>data:{dvh:{max_health:"", health:""}}</code></p>
+</section>
 
-<h2>计分板</h2>
-<table>
-  <tr><th>计分板</th><th>域</th><th>说明</th></tr>
-  <tr><td>dvh.health</td><td>实体</td><td>当前虚拟血量 (mHP)</td></tr>
-  <tr><td>dvh.max_health</td><td>实体</td><td>最大虚拟血量 (mHP)</td></tr>
-  <tr><td>dvh.total_damage</td><td>实体</td><td>累计伤害 (mHP)</td></tr>
-  <tr><td>dvh.total_healing</td><td>实体</td><td>累计治疗 (mHP)</td></tr>
-  <tr><td>dvh.player_damage</td><td>实体</td><td>来自玩家的伤害 (mHP)</td></tr>
-  <tr><td>dvh.rem_damage</td><td>实体</td><td>伤害余数</td></tr>
-  <tr><td>dvh.rem_heal</td><td>实体</td><td>治疗余数</td></tr>
-  <tr><td>dvh.pp</td><td>实体</td><td>百分比阈值（下界）[0,100]</td></tr>
-  <tr><td>dvh.pp_max</td><td>实体</td><td>百分比阈值（上界）[0,100]</td></tr>
-  <tr><td>dvh.prev_hp</td><td>实体</td><td>上一 tick 血量 (×2200)</td></tr>
-  <tr><td>dvh.temp</td><td>#变量</td><td>内部临时计算</td></tr>
-  <tr><td>dbb.temp</td><td>#变量</td><td>bossbar 临时标识</td></tr>
-</table>
+<!-- 计分板 -->
+<section>
+  <h2>计分板</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>计分板</th><th>域</th><th>说明</th></tr>
+    <tr><td>dvh.health</td><td>实体</td><td>当前虚拟血量 (mHP)</td></tr>
+    <tr><td>dvh.max_health</td><td>实体</td><td>最大虚拟血量 (mHP)</td></tr>
+    <tr><td>dvh.total_damage</td><td>实体</td><td>累计伤害 (mHP)</td></tr>
+    <tr><td>dvh.total_healing</td><td>实体</td><td>累计治疗 (mHP)</td></tr>
+    <tr><td>dvh.player_damage</td><td>实体</td><td>来自玩家的伤害 (mHP)</td></tr>
+    <tr><td>dvh.rem_damage</td><td>实体</td><td>伤害余数</td></tr>
+    <tr><td>dvh.rem_heal</td><td>实体</td><td>治疗余数</td></tr>
+    <tr><td>dvh.pp</td><td>实体</td><td>百分比阈值（下界）[0,100]</td></tr>
+    <tr><td>dvh.pp_max</td><td>实体</td><td>百分比阈值（上界）[0,100]</td></tr>
+    <tr><td>dvh.prev_hp</td><td>实体</td><td>上一 tick 血量 (×2200)</td></tr>
+    <tr><td>dvh.temp</td><td>#变量</td><td>内部临时计算</td></tr>
+    <tr><td>dbb.temp</td><td>#变量</td><td>bossbar 标识</td></tr>
+  </table>
+  </div>
+</section>
 
-<h2>标签</h2>
-<table>
-  <tr><th>标签</th><th>说明</th></tr>
-  <tr><td>virtual_health_entity</td><td>VH 实体标识</td></tr>
-  <tr><td>dvh.invulnerable</td><td>无敌状态</td></tr>
-  <tr><td>dbb.has_bossbar</td><td>已绑定血条</td></tr>
-</table>
+<!-- 标签 -->
+<section>
+  <h2>标签</h2>
+  <div class="table-wrap">
+  <table>
+    <tr><th>标签</th><th>说明</th></tr>
+    <tr><td>virtual_health_entity</td><td>VH 实体标识</td></tr>
+    <tr><td>dvh.invulnerable</td><td>无敌状态</td></tr>
+    <tr><td>dbb.has_bossbar</td><td>已绑定血条</td></tr>
+  </table>
+  </div>
+</section>
 
-<h2>安装</h2>
-<ol>
-  <li>下载数据包 zip（从 <a href="https://github.com/DoomDecapitator/doom.virtual.health/releases">Releases</a>）</li>
-  <li>放入存档的 <code>datapacks/</code> 文件夹</li>
-  <li><code>/reload</code> 或重进世界</li>
-  <li>看到 <code>[DVH] Virtual Health System Loaded.</code> 即成功</li>
-</ol>
+<!-- 安装 -->
+<section>
+  <h2>安装</h2>
+  <ol>
+    <li>从 <a href="https://github.com/DoomDecapitator/doom.virtual.health/releases">Releases</a> 下载数据包 zip</li>
+    <li>放入存档的 <code>datapacks/</code> 文件夹</li>
+    <li>执行 <code>/reload</code> 或重进世界</li>
+    <li>聊天栏显示 <code>[DVH] Virtual Health System Loaded.</code> 即成功</li>
+  </ol>
+</section>
 
-<h2>注意事项</h2>
-<ul>
-  <li><code>kill</code> 参数用字节 <code>{kill:1b}</code>，不是布尔</li>
-  <li><code>on_death</code> 回调中 <code>@s[tag=virtual_health_entity]</code> 已失效，直接用 <code>@s</code></li>
-  <li>Predicate below/above 读 <code>@s dvh.pp</code>；between 读 <code>@s dvh.pp</code>（下界）+ <code>@s dvh.pp_max</code>（上界），范围 [0,100]</li>
-  <li><code>add_health {points:负数}</code> 被无敌拦截；<code>set_health</code> 不受无敌影响</li>
-  <li>Bossbar <code>api/create</code> 重复调用 return fail</li>
-  <li><code>scale</code> 参数用整数，<code>scale:1</code>=mHP，<code>scale:1000</code>=HP</li>
-</ul>
+<!-- 注意事项 -->
+<section>
+  <h2>注意事项</h2>
+  <ul class="notes">
+    <li><code>kill</code> 参数用字节 <code>{kill:1b}</code>，不是布尔</li>
+    <li><code>on_death</code> 回调中 <code>@s[tag=virtual_health_entity]</code> 已失效，直接用 <code>@s</code></li>
+    <li><code>add_health {points:负数}</code> 被无敌拦截；<code>set_health</code> 不受无敌影响</li>
+    <li>Bossbar <code>api/create</code> 重复调用 return fail</li>
+    <li><code>scale:1</code> = mHP，<code>scale:1000</code> = HP</li>
+  </ul>
+</section>
 
-<h2>许可证</h2>
-<p>MIT License &copy; DoomDecapitator</p>
+<footer>
+  <p>MIT License &copy; 2026 DoomDecapitator</p>
+</footer>
 
+</div>
 </body>
 </html>
