@@ -38,7 +38,7 @@ doom.bossbar            ← 依赖 DVH，自动同步血条
 ### api/create（传统方式）
 
 ```mcfunction
-/execute as @n run \
+/execute as @n[type=zombie] run \
   function doom.virtual.health:api/create {with:{max_health:2000,health:2000}}
 
 /execute as @e[tag=virtual_health_entity] run \
