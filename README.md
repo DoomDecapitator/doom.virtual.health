@@ -1,5 +1,7 @@
 # Doom Virtual Health (DVH) v3.0 + Doom Bossbar (DBB)
 
+> **🤖 本项目由 Deepseek AI 协助开发与调试** — 代码审查、bug 修复、文档撰写均由 AI 辅助完成。
+
 为 Minecraft 实体注入**独立于原版血量的虚拟血量系统**，自动映射到 Bossbar。
 
 - 支持 `auto_init`：`/summon` 直接带 NBT，第一 tick 自动初始化
@@ -8,6 +10,7 @@
 - 百分比血量判定（`dvh.pp` / `dvh.pp_max` 实体级阈值）
 - 无敌控制、伤害倍率（×1000 标度）、余数精度补偿
 - 正确的死亡归属（UUID hex → `damage ... by <uuid>`）
+- **亟待更多玩家测试**：当前为社区早期版本，欢迎在 [Issues](https://github.com/DoomDecapitator/doom.virtual.health/issues) 反馈任何异常
 
 ---
 
@@ -348,6 +351,43 @@ execute as @e[tag=virtual_health_entity] run \
 
 ---
 
+## 已知 Edge Cases（边界情况）
+
+> ⚠️ **亟待更多玩家测试**：以下为代码审查中识别出的边界情况，部分已在设计中规避，部分受原版机制限制。欢迎反馈实测结果。
+
+### 数值精度类
+
+| # | 场景 | 表现 | 规避建议 |
+|---|------|------|---------|
+| E1 | `auto_init` 的 NBT 用 double（如 `40d`） | 旧版宏展开 `40.0` 会 scoreboard 报错 | ✅ 已修复为 `data get` 版（兼容 double/int/string） |
+| E2 | `get_percentage` 血量 < 1 HP | 整数除法，<1 HP 时百分比可能显示 0 | 低血量请用 `get_health_mhp` 精确读取 |
+| E3 | `get_percentage` / `get_stats` 的 scale | `scale:0` 会除零报错 | 使用 `scale:1`（mHP）或 `scale:1000`（HP） |
+| E4 | `add_health` 大量治疗 | 钳制到 `max_health`，不会溢出 | ✅ 已内置 `#max_safe` 溢出保护 |
+| E5 | `damage_mult` 上限 | 最高 100000（×100 = 10000%） | ✅ 已内置上限保护 |
+
+### 机制限制类（原版限制，无法规避）
+
+| # | 场景 | 表现 |
+|---|------|------|
+| E6 | 单 tick 内受到超大数据伤害（如 `/damage 999999`） | Health 探针单次最多检测 512 HP 的 delta，超出部分截断 |
+| E7 | 治疗时 Health 探针上限 1024 | 单次最多补 512 HP，超出部分丢失 |
+| E8 | 实体处于未加载区块 | tick 检测暂停，虚拟血量不会变化 |
+| E9 | `damage_mult` 极小时（< 1%） | 向下取整后单次伤害可能为 0 |
+| E10 | 实体被 `kill` 命令直接杀死（绕过 VH） | `on_death` 不会触发（原版 kill 不经过 Health 探针） |
+| E11 | 实体有原版 `Regeneration`/饱和回复 | 会触发 VH 治疗检测（Health 上升被识别为治疗） |
+| E12 | 玩家实体 | 支持，但玩家死亡会掉落经验/背包（原版行为，非 VH 控制） |
+
+### 使用注意类
+
+| # | 场景 | 表现 |
+|---|------|------|
+| E13 | `on_death` 命令含复杂引号/宏 | `$execute at @s run $(on_death)` 宏展开可能破坏引号嵌套 |
+| E14 | 多个实体同一 tick 死亡 | `trigger_death` 使用全局 storage，同步执行无并发问题 |
+| E15 | `remove` 后立刻 `create` | 需等 1 tick（原版实体 NBT 写入延迟） |
+| E16 | bossbar `name` 传 JSON 数组（多段文本） | `$(name)` 宏展开嵌套引号可能失败，建议用单个 JSON 对象 |
+
+---
+
 ## 注意事项
 
 - `kill` 参数默认 `{kill:1b}`，移除时**会杀死实体**；不想杀用 `{kill:0b}`
@@ -357,6 +397,7 @@ execute as @e[tag=virtual_health_entity] run \
 - `scale` 参数：`scale:1` = mHP，`scale:1000` = HP
 - 修改 enchantment JSON（vitality.json）需要**重启服务器**
 - 伤害倍率范围 `[1, 100000]`（×1000 标度）
+- **测试反馈渠道**：遇到任何异常请在 [Issues](https://github.com/DoomDecapitator/doom.virtual.health/issues) 提交，附上复现步骤与版本号
 
 ---
 

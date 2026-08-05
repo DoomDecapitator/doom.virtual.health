@@ -125,6 +125,7 @@
     <span class="badge badge-gray">零依赖</span>
   </div>
   <p>为 Minecraft 实体注入独立于原版血量的虚拟血量系统，自动映射到 Bossbar。支持 auto_init（/summon 直接带 NBT）、高频 tick 伤害检测、自定义死亡回调、百分比血量判定、无敌控制、伤害倍率与余数精度补偿。</p>
+  <p><strong>🤖 本项目由 Deepseek AI 协助开发与调试</strong> &mdash; 代码审查、bug 修复、文档撰写均由 AI 辅助完成。当前为社区早期版本，<strong>亟待更多玩家测试</strong>，欢迎反馈：<a href="https://github.com/DoomDecapitator/doom.virtual.health/issues">Issues</a></p>
 </header>
 
 <!-- 快速开始 -->
@@ -394,6 +395,48 @@ execute as @e[tag=virtual_health_entity] run \
   </ol>
 </section>
 
+<!-- 已知 Edge Cases -->
+<section>
+  <h2>已知 Edge Cases（边界情况）</h2>
+  <p><strong>亟待更多玩家测试</strong>：以下为代码审查中识别出的边界情况，部分已在设计中规避，部分受原版机制限制。</p>
+
+  <h3>数值精度类</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>#</th><th>场景</th><th>表现</th><th>规避</th></tr>
+    <tr><td>E1</td><td>auto_init 的 NBT 用 double（40d）</td><td>旧版宏展开 40.0 报错</td><td>已修复为 data get 版（兼容 double/int/string）</td></tr>
+    <tr><td>E2</td><td>get_percentage 血量 &lt; 1 HP</td><td>整数除法可能显示 0%</td><td>低血量用 get_health_mhp 精确读取</td></tr>
+    <tr><td>E3</td><td>scale 参数为 0</td><td>除零报错</td><td>scale:1（mHP）或 scale:1000（HP）</td></tr>
+    <tr><td>E4</td><td>add_health 大量治疗</td><td>钳制到 max_health</td><td>已内置 #max_safe 溢出保护</td></tr>
+    <tr><td>E5</td><td>damage_mult 过大</td><td>数值溢出</td><td>已内置上限 100000</td></tr>
+  </table>
+  </div>
+
+  <h3>机制限制类（原版限制）</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>#</th><th>场景</th><th>表现</th></tr>
+    <tr><td>E6</td><td>单 tick 超大数据伤害（/damage 999999）</td><td>Health 探针单次最多检测 512 HP，超出截断</td></tr>
+    <tr><td>E7</td><td>治疗 Health 探针上限 1024</td><td>单次最多补 512 HP</td></tr>
+    <tr><td>E8</td><td>实体在未加载区块</td><td>tick 检测暂停，血量不变</td></tr>
+    <tr><td>E9</td><td>damage_mult 极小时</td><td>向下取整后单次伤害可能为 0</td></tr>
+    <tr><td>E10</td><td>kill 命令直接杀死（绕过 VH）</td><td>on_death 不触发</td></tr>
+    <tr><td>E11</td><td>原版 Regeneration/饱和回复</td><td>Health 上升被识别为 VH 治疗</td></tr>
+    <tr><td>E12</td><td>玩家实体</td><td>支持，但死亡掉落为原版行为</td></tr>
+  </table>
+  </div>
+
+  <h3>使用注意类</h3>
+  <div class="table-wrap">
+  <table>
+    <tr><th>#</th><th>场景</th><th>表现</th></tr>
+    <tr><td>E13</td><td>on_death 命令含复杂引号/宏</td><td>宏展开可能破坏引号嵌套</td></tr>
+    <tr><td>E14</td><td>多实体同一 tick 死亡</td><td>全局 storage 同步执行，无并发问题</td></tr>
+    <tr><td>E15</td><td>remove 后立刻 create</td><td>需等 1 tick（NBT 写入延迟）</td></tr>
+    <tr><td>E16</td><td>bossbar name 传 JSON 数组</td><td>嵌套引号可能失败，建议单 JSON 对象</td></tr>
+  </table>
+  </div>
+</section>
 <!-- 注意事项 -->
 <section>
   <h2>注意事项</h2>
