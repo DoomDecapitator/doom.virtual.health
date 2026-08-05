@@ -9,6 +9,10 @@
 data merge storage doom.vh:ctx {with:{max_health:2000,health:2000}}
 data merge storage doom.vh:ctx {with:{max_health:5000,health:5000,on_death:"say died"}}
 
+# === custom_data ( /summon 补全 ) ===
+# /summon 时 data:{dvh:{...}} 会触发 mcdoc 补全
+summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:"2000",health:"2000",on_death:"say died"}},NoAI:1b}
+
 # state — 无敌状态（0=vulnerable, 1=invulnerable）
 data merge storage doom.vh:ctx {state:1b}
 
@@ -26,6 +30,4 @@ data merge storage doom.vh:ctx {on_death:"say I died"}
 # hex_chars — UUID 十六进制查表
 data get storage doom.vh:const hex_chars
 
-# === custom_data ( /summon 补全 ) ===
-# /summon 时 data:{dvh:{...}} 会触发 mcdoc 补全
-summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:"2000",health:"2000",on_death:"say died"}},NoAI:1b}
+

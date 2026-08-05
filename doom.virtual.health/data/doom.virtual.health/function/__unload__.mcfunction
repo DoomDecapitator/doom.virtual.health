@@ -1,4 +1,4 @@
-execute as @e[tag=virtual_health_entity] run function doom.virtual.health:api/remove {with:{kill:false}}
+﻿execute as @e[tag=virtual_health_entity] run function doom.virtual.health:api/remove {with:{kill:false}}
 data remove storage doom.vh:ctx _
 data remove storage doom.vh:ctx on_death
 data remove storage doom.vh:ctx uid0
@@ -39,6 +39,7 @@ data remove storage doom.vh:ctx he
 data remove storage doom.vh:ctx hf
 data remove storage doom.vh:ctx state
 data remove storage doom.vh:ctx uid_hex
+data remove storage doom.vh:const hex_chars
 scoreboard objectives remove dvh.health
 scoreboard objectives remove dvh.max_health
 scoreboard objectives remove dvh.total_damage
@@ -48,7 +49,7 @@ scoreboard objectives remove dvh.prev_hp
 scoreboard objectives remove dvh.rem_damage
 scoreboard objectives remove dvh.damage_mult
 scoreboard objectives remove dvh.saddle_bonus
-scoreboard objectives remove dvh.rem_heal
 scoreboard objectives remove dvh.pp
 scoreboard objectives remove dvh.pp_max
+scoreboard objectives remove dvh.rem_heal
 scoreboard objectives remove dvh.temp

@@ -2,10 +2,10 @@
 dispatch minecraft:storage["doom.vh:ctx"] to struct{
     /// API input parameters for create/set/add operations
     with?: struct{
-        /// Max health in HP (auto-converted to mHP)
-        max_health: int,
-        /// Current health in HP (auto-converted to mHP)
-        health: int,
+        /// Max health in HP (×1000 → mHP, accepts decimals)
+        max_health: double,
+        /// Current health in HP (×1000 → mHP, accepts decimals)
+        health: double,
         /// Callback command on VH death
         on_death?: #[command] string,
     },
@@ -32,10 +32,10 @@ dispatch minecraft:storage["doom.vh:const"] to struct{
 
 /// Custom data for /summon {data:{dvh:{...}}} — auto_init VH
 dispatch mcdoc:custom_data["dvh"] to struct{
-    /// Max health in HP (string required by /summon)
-    max_health: string,
-    /// Current health in HP (string required by /summon)
-    health: string,
+    /// Max health in HP (double, ×1000 → mHP, accepts decimals)
+    max_health: double,
+    /// Current health in HP (double, ×1000 → mHP, accepts decimals)
+    health: double,
     /// Callback command on VH death (string, without /)
     on_death?: #[command] string,
 }

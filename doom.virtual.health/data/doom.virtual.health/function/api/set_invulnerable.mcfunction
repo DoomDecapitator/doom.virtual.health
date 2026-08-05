@@ -4,3 +4,4 @@ execute store result score #inv_state dvh.temp run data get storage doom.vh:ctx 
 execute if score #inv_state dvh.temp matches 1 run tag @s add dvh.invulnerable
 execute unless score #inv_state dvh.temp matches 1 run tag @s remove dvh.invulnerable
 execute unless score #inv_state dvh.temp matches 1 run execute store result score @s dvh.prev_hp run data get entity @s Health 2200
+data remove storage doom.vh:ctx state

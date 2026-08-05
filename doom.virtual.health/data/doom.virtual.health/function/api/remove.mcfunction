@@ -18,5 +18,6 @@ execute if data entity @s equipment.mainhand.components."minecraft:enchantments"
 execute if data entity @s equipment.mainhand.components."minecraft:enchantments"."doom.virtual.health:vitality" run data remove storage doom.vh:ctx trigger
 execute unless data storage doom.vh:ctx _.kill run data modify storage doom.vh:ctx _.kill set value 1b
 execute if data storage doom.vh:ctx _{kill: 1b} run damage @s 2147483647 minecraft:out_of_world
+data remove storage doom.vh:ctx _
 
 

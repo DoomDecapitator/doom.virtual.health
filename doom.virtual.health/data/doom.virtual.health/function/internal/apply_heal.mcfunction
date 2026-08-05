@@ -1,6 +1,6 @@
 scoreboard players operation #heal_val dvh.temp = @s dvh.temp
 scoreboard players operation #heal_val dvh.temp -= #baseline dvh.temp
-scoreboard players operation #heal_val dvh.temp *= #1000 dvh.temp
+scoreboard players operation #heal_val dvh.temp *= #t50 dvh.temp
 scoreboard players add #heal_val dvh.temp 11
 scoreboard players operation #heal_val dvh.temp += @s dvh.rem_heal
 scoreboard players operation #rem dvh.temp = #heal_val dvh.temp

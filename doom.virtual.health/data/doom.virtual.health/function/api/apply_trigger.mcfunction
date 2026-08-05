@@ -1,3 +1,4 @@
+execute unless entity @s[tag=virtual_health_entity] run return fail
 # 骑乘 → mainhand
 execute if entity @s[type=#doom.virtual.health:riding] if items entity @s weapon.mainhand * run data modify storage doom.vh:ctx trigger set from entity @s equipment.mainhand
 execute if entity @s[type=#doom.virtual.health:riding] if items entity @s weapon.mainhand * run data modify storage doom.vh:ctx trigger.components."minecraft:enchantments"."doom.virtual.health:vitality" set value 1

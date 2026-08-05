@@ -1,7 +1,14 @@
 execute unless entity @s[tag=virtual_health_entity] run return fail
-$data modify storage doom.vh:ctx _ set value {pts:$(points)}
-execute store result score #pts dvh.temp run data get storage doom.vh:ctx _.pts 1000
-data remove storage doom.vh:ctx _
+$scoreboard players set #pct dvh.temp $(pct)
+scoreboard players operation #t1 dvh.temp = @s dvh.max_health
+scoreboard players operation #t2 dvh.temp = @s dvh.max_health
+scoreboard players operation #t1 dvh.temp /= #100 dvh.temp
+scoreboard players operation #t1 dvh.temp *= #pct dvh.temp
+scoreboard players operation #t2 dvh.temp %= #100 dvh.temp
+scoreboard players operation #t2 dvh.temp *= #pct dvh.temp
+scoreboard players operation #t2 dvh.temp /= #100 dvh.temp
+scoreboard players operation #pts dvh.temp = #t1 dvh.temp
+scoreboard players operation #pts dvh.temp += #t2 dvh.temp
 scoreboard players set #max_safe dvh.temp 2147483647
 scoreboard players operation #max_safe dvh.temp -= @s dvh.max_health
 execute if score #max_safe dvh.temp matches ..-1 run scoreboard players set #max_safe dvh.temp 0
