@@ -1,0 +1,19 @@
+# 本机产物 / 编辑器杂物（不进仓库）
+node_modules/
+*.log
+*.tmp
+*.bak
+*.bak-*
+mcserver/
+mcserver-*/
+**/world/
+**/eula.txt
+**/server.properties
+**/usercache.json
+**/ops.json
+banned-*.json
+**/*.jar
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

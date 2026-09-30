@@ -1,0 +1,4 @@
+# 数据包产物按字节比对：一律不做 EOL 转换。
+# 动因：本机 core.autocrlf=true，不加这条会让"没改过"的文件在进库时被换行改写，
+# 于是 dist/ 的 zip 与仓库本体 doom.virtual.health/ 不再逐字节相同。
+* -text

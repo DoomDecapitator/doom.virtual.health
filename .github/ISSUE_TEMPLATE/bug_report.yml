@@ -1,0 +1,118 @@
+name: Bug 报告
+description: 装了 doom.virtual.health 之后出现异常（血量不对 / 血条不出现 / on_death 没触发 / 报错 / 卡顿）
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        先谢谢你来报问题 🙏 下面这几样（版本、环境、复现步骤、日志）是定位问题的全部线索，
+        缺哪样都可能让排查原地打转。**能让它复现的最小步骤**最值钱。
+
+        报之前顺手看一眼：
+        [安装与排查](https://github.com/DoomDecapitator/doom.virtual.health/blob/main/docs/01-安装.md)
+        和 README 里的[已知 Edge Cases](https://github.com/DoomDecapitator/doom.virtual.health#已知-edge-cases边界情况)
+        —— 有相当一部分"看起来是 bug"的现象在那两处已经写清楚是原版机制限制（E6 / E7 / E10 …）。
+
+  - type: input
+    id: pack_version
+    attributes:
+      label: 包版本
+      description: zip 文件名里的版本号
+      placeholder: v3.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: checksum
+    attributes:
+      label: 校验值核对结果
+      description: 跑过 `sha256sum -c SHA256SUMS.txt`（或 PowerShell 的 Get-FileHash）吗？结果是什么
+      placeholder: OK / 不一致 / 没跑
+    validations:
+      required: true
+
+  - type: input
+    id: mc_version
+    attributes:
+      label: Minecraft 版本与运行方式
+      description: 游戏版本 + 单人存档还是服务器（服务器请写服务端类型，例如 Fabric / Paper / 原版，以及是否装模组）
+      placeholder: 1.21.8 · 单人存档 / 1.21.8 · Fabric 服务器
+    validations:
+      required: true
+
+  - type: dropdown
+    id: howcreated
+    attributes:
+      label: 这只实体是怎么获得虚拟血量的
+      options:
+        - auto_init（/summon 带 data:{dvh:{...}}）
+        - api/create（手动调用）
+        - 不确定 / 别人做的包帮我建的
+        - 不是"创建"问题（血条、伤害、回调等）
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro_command
+    attributes:
+      label: 你用的那条命令（原样贴）
+      description: 例如 /summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d}}, NoAI:1b}
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤（最小步骤）
+      placeholder: |
+        1. 1.21.8 单人存档，装 v3.0.0，/reload
+        2. 打 /summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d}}, NoAI:1b}
+        3. 脚下没有血条；打它扣的是原版血量
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望什么 / 实际发生了什么
+      placeholder: |
+        期望：血条出现，打它掉虚拟血量
+        实际：没有血条；/data get entity @e[type=zombie,limit=1] 里也看不到 dvh 数据
+    validations:
+      required: true
+
+  - type: textarea
+    id: snapshot
+    attributes:
+      label: 现场快照（依次跑，把输出贴进来）
+      description: 尤其"血量数字不对"或"回调不触发"的情况，这几条最能定位
+      value: |
+        /tag @e[tag=virtual_health_entity] list
+        /data get entity @e[tag=virtual_health_entity,limit=1]
+        /data get storage doom.vh:ctx
+        /scoreboard players get @e[tag=virtual_health_entity,limit=1] dvh.health
+        /function doom.virtual.health:dvhentity {target:"@s"}
+      render: text
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志片段
+      description: logs/latest.log 里与 doom.virtual.health / doom.bossbar 有关的行（尤其 "Failed to load function"、"Unknown"、报错栈）
+      render: text
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我看过 README 的「已知 Edge Cases」，里面没有同样的问题（E6/E7 截断、E8 未加载区块、E10 /kill 不触发 on_death …）
+          required: false
+        - label: 我贴的日志里没有个人信息（服务器 IP、玩家 UUID、token 等）
+          required: true
