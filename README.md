@@ -44,7 +44,7 @@
 再召唤一只有虚拟血量的僵尸（`auto_init`，第一 tick 自动初始化）：
 
 ```
-/summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d, on_death:"say died"}}, NoAI:1b}
+/summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d}}, NoAI:1b}
 ```
 
 它脚下会立刻多出一条血量条（`doom.bossbar` 命名空间跟着包一起装），打它掉的是**虚拟血量**，不是原版那 20 点。
@@ -135,7 +135,7 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 ### 方式一：auto_init（推荐）
 
 ```
-/summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d, on_death:"say died"}}, NoAI:1b}
+/summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d}}, NoAI:1b}
 ```
 
 ### 方式二：api/create（传统方式，对任意实体）
