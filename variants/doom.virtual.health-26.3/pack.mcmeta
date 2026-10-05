@@ -1,0 +1,10 @@
+{
+  "pack": {
+    "min_format": [
+      121,
+      0
+    ],
+    "max_format": 121,
+    "description": "§cDVH v3.0 §7+ §9DBB\n§7Scale 22, max_health up to 95325"
+  }
+}

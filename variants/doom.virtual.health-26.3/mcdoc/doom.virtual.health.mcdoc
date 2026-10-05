@@ -1,0 +1,81 @@
+/// Storage: doom.vh:ctx — VH system runtime data
+/// 说明：键名**全部显式声明**（不再用 [string]: any）——
+///   换来「打路径有补全 + 拼错键当场报警」；代价是新增运行时键要在这里登记，
+///   否则 Spyglass 会报 Unknown key。中转槽命名见 b*/h* 注释。
+dispatch minecraft:storage["doom.vh:ctx"] to struct{
+    /// API input parameters for create/set/add operations
+    with?: struct{
+        /// Max health in HP (×1000 → mHP, accepts decimals)
+        max_health: double,
+        /// Current health in HP (×1000 → mHP, accepts decimals)
+        health: double,
+        /// Callback command on VH death
+        on_death?: #[command] string,
+    },
+    /// UUID hex string for kill attribution
+    uid_hex?: string,
+    /// Death callback command (from trigger_death)
+    on_death?: #[command] string,
+    /// UUID int components for hex conversion
+    uid0?: int,
+    uid1?: int,
+    uid2?: int,
+    uid3?: int,
+    /// Invulnerability state: 0 = vulnerable, 1 = invulnerable
+    state?: byte @ 0..1,
+    /// Macro-param scratch slot: api/* pass {pts} / {hp} / {kill} / $(with) through it
+    /// （键名是裸下划线，mcdoc 里必须加引号写成 "_"）
+    "_"?: any,
+    /// Item-NBT relay for riding-equipment round-trip (set from equipment.mainhand … set back)
+    trigger?: any,
+    /// UUID byte slots — written by internal/uuid_hex (`execute store result … b0 int 1`)
+    b0?: int,
+    b1?: int,
+    b2?: int,
+    b3?: int,
+    b4?: int,
+    b5?: int,
+    b6?: int,
+    b7?: int,
+    b8?: int,
+    b9?: int,
+    ba?: int,
+    bb?: int,
+    bc?: int,
+    bd?: int,
+    be?: int,
+    bf?: int,
+    /// Hex-string slots — written by internal/uuid_join (looked up in doom.vh:const.hex_chars)
+    h0?: string,
+    h1?: string,
+    h2?: string,
+    h3?: string,
+    h4?: string,
+    h5?: string,
+    h6?: string,
+    h7?: string,
+    h8?: string,
+    h9?: string,
+    ha?: string,
+    hb?: string,
+    hc?: string,
+    hd?: string,
+    he?: string,
+    hf?: string,
+}
+
+/// Storage: doom.vh:const — read-only constants
+dispatch minecraft:storage["doom.vh:const"] to struct{
+    /// 256-element hex lookup table ("00".."ff")
+    hex_chars: [string],
+}
+
+/// Custom data for /summon {data:{dvh:{...}}} — auto_init VH
+dispatch mcdoc:custom_data["dvh"] to struct{
+    /// Max health in HP (double, ×1000 → mHP, accepts decimals)
+    max_health: double,
+    /// Current health in HP (double, ×1000 → mHP, accepts decimals)
+    health: double,
+    /// Callback command on VH death (string, without /)
+    on_death?: #[command] string,
+}

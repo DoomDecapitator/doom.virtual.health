@@ -1,0 +1,3 @@
+// Function tags for doom.virtual.health API
+// Each tag points to the corresponding api/ function.
+// Usage: function #doom.virtual.health:<tag> {params}

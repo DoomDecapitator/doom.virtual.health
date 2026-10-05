@@ -2,8 +2,114 @@
 
 > 口径：只记**会影响玩家**的改动 —— 改了什么 · 为什么 · 能核对什么。
 > 版本号规则：`vX.Y.Z`（正式）· `vX.Y.Z-beta.N` / `-rc.N`（预发布）；**Minecraft 版本不塞进版本号**，
-> 它写在 `pack.mcmeta`（`pack_format: 81` · `supported_formats: 48–82`）与 [`docs/04-兼容与版本.md`](docs/04-兼容与版本.md) 里。
-> 目标环境：Minecraft **1.21.7 / 1.21.8**（`pack_format` 81）。
+> 它写在 `pack.mcmeta` 与 [`docs/04-兼容与版本.md`](docs/04-兼容与版本.md) 里。
+> 目标环境：Minecraft **1.21.5 – 26.3**（多版本，按变体分两份下发）。
+
+---
+
+## v3.1.0 · 多版本支持（1.21.5 → 26.3）—— 2026-10-05
+
+**下载**：
+- [`dist/doom.virtual.health-v3.1.0.zip`](dist/doom.virtual.health-v3.1.0.zip) —— **1.21.5 – 26.2**（主用）
+  · sha256 `cd556d2b946fb4a8c24a37c242c4e0cedf6f9eb3d296614c0ad17af02032145b`
+- [`dist/doom.virtual.health-v3.1.0-mc26.3.zip`](dist/doom.virtual.health-v3.1.0-mc26.3.zip) —— **仅 26.3**
+  · sha256 `51bcccbc04d4742c689140863c166aa50e13a683c587735f4e4f741344db8816`
+
+> **玩法行为与 v3.0.0 完全一致** —— 63 个 mcfunction **一字未改**。
+> 这一版改的是**能不能装上去**：26.3 改了两处会让服务器**直接起不来**的东西。
+
+### 一、多版本支持表（MC 版本 → 用哪份变体）
+
+| MC 版本 | data pack format | 用哪份 | 附魔 JSON `vitality.json` |
+|---|---|---|---|
+| **1.21.5** | 71 | `v3.1.0`（仓库根 `doom.virtual.health/`） | 原样 |
+| 1.21.6 | 80 | 同上 | 原样 |
+| 1.21.7 / 1.21.8 | 81 | 同上 | 原样 |
+| 1.21.9 / 1.21.10 | 88.0 | 同上 | 原样 |
+| 1.21.11 | 94.1 | 同上 | 原样 |
+| 26.1 / 26.1.1 / 26.1.2 | 101.1 | 同上 | 原样 |
+| 26.2 | 107.1 | 同上 | 原样 |
+| **26.3** | 121.0 | **`v3.1.0-mc26.3`**（仓库 [variants/doom.virtual.health-26.3/](variants/doom.virtual.health-26.3)） | **已按 26.3 schema 修好** |
+| 1.21.4 及更低 | ≤ 61 | ❌ 不支持 | — |
+
+**为什么必须拆两份**：26.3 改了 `enchantment` 注册表的 JSON 形状，
+`condition` → `type`、`requirements` 由**数组**变**单体对象**。
+同一份 JSON **无法同时满足两侧**（26.2 及以前要旧的、26.3 只认新的）⇒ 只能拆。
+两份的**命令层逐字节相同**，差异只有 `pack.mcmeta` + `enchantment/vitality.json` 两个文件。
+
+> ⚠️ **旧变体一字未改**：`v3.1.0` 主用份的 `vitality.json` 与 v3.0.0
+> **逐字节相同**（sha256 `38ac2a65…bafe1`）—— 即"**不会为 26.3 改坏旧版**" ✓
+
+### 二、本轮修了什么（两处硬破坏）
+
+**① `enchantment/vitality.json` 的 schema 在 26.3 变了 —— 会让服务器直接起不来** ✗✗
+
+```
+[Worker-Main-18/ERROR]: Registry loading errors:
+> Errors in registry minecraft:enchantment:
+>> Errors in element doom.virtual.health:vitality:
+Failed to parse doom.virtual.health:vitality from pack file/doom.virtual.health
+Caused by: Not a JSON object: [{"condition":"minecraft:entity_properties",...}]
+[main/WARN]: Failed to load datapacks, can't proceed with server load.
+```
+⇒ 这**不是"功能静默失效"，是整个服务器拒绝启动** ✗。
+
+两处 schema 变更（对照 26.3 原版 `data/minecraft/enchantment/bane_of_arthropods.json` 逐字段核对）：
+1. **`requirements` 由「数组」变「单体对象」**：`[{...}]` → `{...}`
+2. **谓词判别键改名**：`"condition"` → `"type"`
+
+> **变更点精确定位在 `26.2 → 26.3` 那一步**（不是"26.x 全线"）：
+> 对 12 个版本的原版附魔 JSON 统计 `"condition"` 出现次数 ⇒
+> `56,56,56,56,55,55,60,65,65,65,**65**,**0**` —— 26.2 仍有 65 ✓，26.3 归零 ✗。
+
+> 🔴 **这一类叫「宽松 → 收紧」型破坏**：`requirements` 在原版**12/12 版本全部是单体** ✓
+> ⇒ 本包原来的 `[{...}]` 数组写法**从来就不合规**，只因旧版解码器"宽松接受"才一直没炸。
+> **教训：原版任何版本都没有先例的写法，都是定时炸弹。**
+
+**② `pack.mcmeta` 缺 `min_format`/`max_format`** —— 1.21.9 起**直接拒收**：
+```
+Couldn't load file/doom.virtual.health pack metadata:
+  Pack declares support for version newer than 81, but is missing mandatory fields min_format and max_format
+```
+**③ 顺带收紧下限**：源包声明 `supported_formats 48–82`，但代码用了 **1.21.5 才引入的 `equipment:{}`**
+⇒ **自称下限 48 是错的** ✗ ⇒ 本次收紧到 **71（= 1.21.5）**，与真实能力对齐。
+
+**④ 26.3 上 `supported_formats` 是「禁止」而非「可选」**：
+```
+Pack key supported_formats is deprecated starting from pack format 82.
+Remove supported_formats from your pack.mcmeta.
+```
+⇒ 边界是"**声明范围触及 82+**"就触发 ⇒ 26.3 那份改成**纯新式**（只留 `min_format`/`max_format`）。
+改后复跑：deprecation 警告 **0 条** ✓。
+
+### 三、真机验收证据
+
+三台实测，**各 12/12 断言全过，8 类加载错误全 0**：
+
+| 版本 | Java | 变体 | 8 类门槛 | 汇总行 | 判定 |
+|---|---|---|---|---|---|
+| **1.21.5** | 21 | `v3.1.0`（legacy 形态） | **全 0** ✓ | `pass=12 fail=0 total=12` | ✅ **ALL PASS** |
+| **1.21.10** | 21 | `v3.1.0`（legacy 形态） | **全 0** ✓ | `pass=12 fail=0 total=12` | ✅ **ALL PASS** |
+| **26.3** | **25** | `v3.1.0-mc26.3` | **全 0** ✓ | `pass=12 fail=0 total=12` | ✅ **ALL PASS** |
+
+**26.3 关键对照（证明 schema 修复真的有效）**：
+
+| 时机 | 现象 |
+|---|---|
+| **修复前** | ✗ `Failed to load datapacks, can't proceed with server load.` ⇒ **服务器根本起不来** |
+| **修复后** | ✅ 0 条 `Registry loading errors` · 服务器正常 `Done` · 套件 **12/12** |
+
+12 条断言覆盖：常量/目标/`attribute max_health` 读回 1024 / `Health*2200==1126400` /
+真实伤害端到端 / `equipment.saddle` 组件路径 / bossbar 同步 / `out_of_world` 硬杀 /
+**UUID hex 伤害真的杀死实体** / 4 个外部 API 签名可调。
+
+### 四、能核对什么
+
+- `dist/doom.virtual.health-v3.1.0.zip` 内 **92 个条目**与仓库 [`doom.virtual.health/`](doom.virtual.health) 下同名文件**逐字节相同**（0 差异）。
+- `dist/doom.virtual.health-v3.1.0-mc26.3.zip` 内 **92 个条目**与仓库 [`variants/doom.virtual.health-26.3/`](variants/doom.virtual.health-26.3) 下同名文件**逐字节相同**（0 差异）。
+- 主用份与 v3.0.0 相比，**只有 `pack.mcmeta` 一个文件不同**（其余 90 个逐字节相同）——
+  **命令层零改动**，对外契约（`dvh.health` / `dvh.max_health` / `dvh.temp` 目标、
+  `doom.vh:const.hex_chars` storage、4 个 API 函数签名与 `add_health` 的 `{points}` 宏参数）**一字未改** ✓。
 
 ---
 

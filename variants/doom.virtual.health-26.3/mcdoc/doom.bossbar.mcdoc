@@ -1,0 +1,6 @@
+dispatch minecraft:storage["doom.dbb:ctx"] to struct{
+    /// Bossbar ID string for delete/sync operations
+    id?: string,
+    /// Any other runtime data (e.g. _ for macro params)
+    [string]: any,
+}
