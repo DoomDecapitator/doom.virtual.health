@@ -4,32 +4,32 @@
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.21.5%20%E2%80%93%2026.3-3C8527)](docs/04-兼容与版本.md)
 [![许可](https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF-MIT-97ca00)](LICENSE)
 
-<!-- 首屏效果图位（还没放图）：按 docs/图-首屏效果位.md 的说明截一张"一只怪顶着血条、血量不是原版那 20 点"的图，
+<!-- 首屏效果图位（还没放图）：按 docs/图-首屏效果位.md 的说明截一张“一只怪顶着血条、血量不是原版那 20 点”的图，
      存成 docs/assets/首屏效果.png，然后把下面这行的注释去掉。在那之前不要留半张破图。 -->
 <!-- <p align="center"><img src="docs/assets/首屏效果.png" width="720" alt="doom.virtual.health 在存档里跑起来的样子"></p> -->
 
-> **这是什么**：用**纯数据包**给实体注入一套**独立于原版血量的虚拟血量** —— 血量以 0.001 HP（mHP）为单位、上限随便开到 95325 HP，
-> 自动映射到 **Bossbar 血条**；配 `auto_init`（`/summon` 直接带 NBT）、非侵入 tick 伤害检测、死亡回调 `on_death`、
+> 这是什么：用纯数据包给实体注入一套独立于原版血量的虚拟血量，血量以 0.001 HP（mHP）为单位、上限随便开到 95325 HP，
+> 自动映射到 Bossbar 血条；配 `auto_init`（`/summon` 直接带 NBT）、非侵入 tick 伤害检测、死亡回调 `on_death`、
 > 百分比血量判定、无敌控制、伤害倍率、按比例回血。零 Mod、零外部依赖。
 >
-> **下哪个**：见下面「**MC 版本 → 用哪份变体**」—— **1.21.5 – 26.2** 用 `dist/doom.virtual.health-v3.1.0.zip`；**26.3** 用 `dist/doom.virtual.health-v3.1.0-mc26.3.zip`。
+> 下哪个：见下面「MC 版本 → 用哪份变体」—— 1.21.5 – 26.2 用 `dist/doom.virtual.health-v3.1.0.zip`；26.3 用 `dist/doom.virtual.health-v3.1.0-mc26.3.zip`。
 >
-> **怎么装**：解压 zip → 得到 `doom.virtual.health/` 文件夹 → 整个丢进 `saves/<你的存档>/datapacks/`（服务器：`world/datapacks/`）
+> 怎么装：解压 zip → 得到 `doom.virtual.health/` 文件夹 → 整个丢进 `saves/<你的存档>/datapacks/`（服务器：`world/datapacks/`）
 > → 进游戏 `/reload`。就这三步。
 >
-> **怎么验**：下载后先对一下校验值 —— 见下面「校验下载的文件」。
+> 怎么验：下载后先对一下校验值，见下面「校验下载的文件」。
 >
-> **图文站点**：<https://doomdecapitator.github.io/doom.virtual.health/> —— 就是仓库里的 `docs/index.html`，随本仓库一起发布，不另存一份。
+> 图文站点：<https://doomdecapitator.github.io/doom.virtual.health/>，就是仓库里的 `docs/index.html`，随本仓库一起发布，不另存一份。
 >
-> **源码在哪**：**这个包没有生成器** —— 源码就是 [`doom.virtual.health/`](doom.virtual.health) 里那 63 个 mcfunction 本体，
-> 点开就能逐个读；zip 里的文件与它**逐字节相同**（见下）。
+> 源码在哪：这个包没有生成器，源码就是 [`doom.virtual.health/`](doom.virtual.health) 里那 63 个 mcfunction 本体，
+> 点开就能逐个读；zip 里的文件与它逐字节相同（见下）。
 
-> ## 当前状态：**v3.1.0 正式发布（Latest）** —— 多版本支持 1.21.5 → 26.3
-> 玩法行为与 v3.0.0 **完全一致**（63 个 mcfunction 一字未改）。这一版改的是**能不能装上去**：
-> 26.3 改了 `enchantment` 注册表的 JSON 形状，旧写法会让**服务器直接起不来** ✗ —— 已修好并真机复验。
-> **三台实测全绿**：1.21.5 / 1.21.10 / 26.3 **各 12/12 断言通过 · 8 类加载错误全 0** ✓
-> **包内的 `pack.mcmeta` 描述串仍写着 "DVH v3.0"**，那是同一个版本，不是旧包。
-> **可以装进存档玩，但请先备份存档。**
+> ## 当前状态：v3.1.0 正式发布（Latest），多版本支持 1.21.5 → 26.3
+> 玩法行为与 v3.0.0 完全一致（63 个 mcfunction 一字未改）。这一版改的是能不能装上去：
+> 26.3 改了 `enchantment` 注册表的 JSON 形状，旧写法会让服务器直接起不来 ✗，已修好并真机复验。
+> 三台实测全绿：1.21.5 / 1.21.10 / 26.3 各 12/12 断言通过 · 8 类加载错误全 0 ✓
+> 包内的 `pack.mcmeta` 描述串仍写着 "DVH v3.0"，那是同一个版本，不是旧包。
+> 可以装进存档玩，但请先备份存档。
 
 ---
 
@@ -47,12 +47,12 @@
 /summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:40d, health:40d}}, NoAI:1b}
 ```
 
-它脚下会立刻多出一条血量条（`doom.bossbar` 命名空间跟着包一起装），打它掉的是**虚拟血量**，不是原版那 20 点。
+它脚下会立刻多出一条血量条（`doom.bossbar` 命名空间跟着包一起装），打它掉的是虚拟血量，不是原版那 20 点。
 
 没反应就按顺序查这三样：`pack.mcmeta` 是不是正好在 `datapacks/doom.virtual.health/pack.mcmeta`（多套一层就不加载）
 → `logs/latest.log` 里有没有 `Failed to load function` → 有没有 `/reload`。
 
-**要卸载**：先 `/function doom.virtual.health:__unload__` 把所有虚拟血量实体摘干净，再删掉 `datapacks/doom.virtual.health/` → `/reload`。
+要卸载：先 `/function doom.virtual.health:__unload__` 把所有虚拟血量实体摘干净，再删掉 `datapacks/doom.virtual.health/` → `/reload`。
 细一点的安装步骤（含"包放哪儿、服务器怎么放、版本不符怎么判"）见 [`docs/01-安装.md`](docs/01-安装.md)。
 
 ## 校验下载的文件（一行）
@@ -71,7 +71,7 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 | `doom.virtual.health-v3.1.0.zip`（1.21.5–26.2） | `cd556d2b946fb4a8c24a37c242c4e0cedf6f9eb3d296614c0ad17af02032145b` |
 | `doom.virtual.health-v3.1.0-mc26.3.zip`（仅 26.3） | `51bcccbc04d4742c689140863c166aa50e13a683c587735f4e4f741344db8816` |
 
-> 这个值不是手抄的：`tools/build_dist.py` 打完 zip 会**回读每一个条目**与仓库 [`doom.virtual.health/`](doom.virtual.health) 下的同名文件逐字节比，
+> 这个值不是手抄的：`tools/build_dist.py` 打完 zip 会回读每一个条目与仓库 [`doom.virtual.health/`](doom.virtual.health) 下的同名文件逐字节比，
 > 不一致就报错退出；`tools/verify.py` 再把 `SHA256SUMS.txt` / zip / 包体三方对一遍。
 > 你重新打包得到的 hash 应当与上表完全相同。
 
@@ -79,55 +79,55 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 
 | 文件 | 里面是什么 | 适合谁 |
 |---|---|---|
-| **`dist/doom.virtual.health-v3.1.0.zip`**（1.21.5 – 26.2） | 完整的 `doom.virtual.health/` 数据包：**92 个文件**（64 个 `.mcfunction` + 24 个 `.json` + 3 个 `.mcdoc` + `pack.mcmeta` + 包内 README），含两个命名空间 —— `doom.virtual.health`（虚拟血量核心）与 `doom.bossbar`（血条联动，可选，不接也不影响本体） | **1.21.5 – 26.2**，绝大多数人下这个 |
-| **`dist/doom.virtual.health-v3.1.0-mc26.3.zip`**（仅 26.3） | 同一套命令，**附魔 JSON 按 26.3 新 schema 修好**（`condition`→`type`、`requirements` 数组→单体） | **只在 26.3 上用**。26.3 上装上面那份会**让服务器起不来** ✗ |
+| **`dist/doom.virtual.health-v3.1.0.zip`**（1.21.5 – 26.2） | 完整的 `doom.virtual.health/` 数据包：**92 个文件**（64 个 `.mcfunction` + 24 个 `.json` + 3 个 `.mcdoc` + `pack.mcmeta` + 包内 README），含两个命名空间，`doom.virtual.health`（虚拟血量核心）与 `doom.bossbar`（血条联动，可选，不接也不影响本体） | **1.21.5 – 26.2**，绝大多数人下这个 |
+| `dist/doom.virtual.health-v3.1.0-mc26.3.zip`（仅 26.3） | 同一套命令，附魔 JSON 按 26.3 新 schema 修好（`condition`→`type`、`requirements` 数组→单体） | 只在 26.3 上用。26.3 上装上面那份会**让服务器起不来** ✗ |
 
 ## 它给你什么（核心特性）
 
 | 能力 | 一句话 |
 |---|---|
-| **独立虚拟血量** | 实体持有 `dvh.health` / `dvh.max_health`（mHP，0.001 HP 精度），与原版血量完全解耦 |
-| **auto_init** | `/summon ... {data:{dvh:{...}}}` 直接带 NBT，第一 tick 自动完成注册 + 触发器分配 |
-| **tick 伤害检测** | 拿原版 Health（复位到 `512f`）当探针，22 倍采样，把原版伤害/治疗精准换算进虚拟血量 |
-| **死亡回调 `on_death`** | 血量归零时执行任意命令串（`say` / `function` / `summon` / `playsound` …） |
-| **正确的击杀归属** | UUID（4×int）→ hex 字符串 → `damage ... by <uuid>`，击杀 credit 归真正的攻击者 |
-| **百分比判定** | 实体级阈值 `dvh.pp` / `dvh.pp_max` + 7 个 predicate 函数（below / above / between × percentage / hp） |
-| **无敌与倍率** | `set_invulnerable` 一键免伤；`set_damage_mult` 可把伤害压到 0.1% 或放大到 10000% |
-| **精度补偿** | `dvh.rem_damage` / `dvh.rem_heal` 把余数进位，长期累计不丢精度 |
-| **统计追踪** | 累计伤害 / 治疗 / 玩家伤害，可导出到任意计分板 |
-| **Bossbar 血条** | `doom.bossbar` 自动同步虚拟血量，支持自定义名称/颜色/样式/可见玩家、死亡后保留血条 |
-| **vitality 附魔触发器** | 用附魔 tick 驱动装备加成同步（`attribute_modifiers` → `dvh.max_health`），替代命令轮询 |
-| **mcdoc 补全** | 3 个 mcdoc 文件，装了 Spyglass + mcdoc 插件后写 storage / `data:{dvh:{` 有补全与拼写检查 |
+| 独立虚拟血量 | 实体持有 `dvh.health` / `dvh.max_health`（mHP，0.001 HP 精度），与原版血量完全解耦 |
+| auto_init | `/summon ... {data:{dvh:{...}}}` 直接带 NBT，第一 tick 自动完成注册 + 触发器分配 |
+| tick 伤害检测 | 拿原版 Health（复位到 `512f`）当探针，22 倍采样，把原版伤害/治疗精准换算进虚拟血量 |
+| 死亡回调 `on_death` | 血量归零时执行任意命令串（`say` / `function` / `summon` / `playsound` …） |
+| 正确的击杀归属 | UUID（4×int）→ hex 字符串 → `damage ... by <uuid>`，击杀 credit 归真正的攻击者 |
+| 百分比判定 | 实体级阈值 `dvh.pp` / `dvh.pp_max` + 7 个 predicate 函数（below / above / between × percentage / hp） |
+| 无敌与倍率 | `set_invulnerable` 一键免伤；`set_damage_mult` 可把伤害压到 0.1% 或放大到 10000% |
+| 精度补偿 | `dvh.rem_damage` / `dvh.rem_heal` 把余数进位，长期累计不丢精度 |
+| 统计追踪 | 累计伤害 / 治疗 / 玩家伤害，可导出到任意计分板 |
+| Bossbar 血条 | `doom.bossbar` 自动同步虚拟血量，支持自定义名称/颜色/样式/可见玩家、死亡后保留血条 |
+| vitality 附魔触发器 | 用附魔 tick 驱动装备加成同步（`attribute_modifiers` → `dvh.max_health`），替代命令轮询 |
+| mcdoc 补全 | 3 个 mcdoc 文件，装了 Spyglass + mcdoc 插件后写 storage / `data:{dvh:{` 有补全与拼写检查 |
 
 ## MC 版本 → 用哪份变体
 
 | MC 版本 | data format | 用哪份 | 附魔 JSON | 实测 |
 |---|---|---|---|---|
-| **1.21.5** | 71 | `v3.1.0` | 原样 | ✅ 12/12 |
+| 1.21.5 | 71 | `v3.1.0` | 原样 | ✅ 12/12 |
 | 1.21.6 | 80 | `v3.1.0` | 原样 | 🟡 同区间外推 |
 | 1.21.7 / 1.21.8 | 81 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| **1.21.9 / 1.21.10** | 88.0 | `v3.1.0` | 原样 | ✅ 12/12（1.21.10） |
+| 1.21.9 / 1.21.10 | 88.0 | `v3.1.0` | 原样 | ✅ 12/12（1.21.10） |
 | 1.21.11 | 94.1 | `v3.1.0` | 原样 | 🟡 同区间外推 |
 | 26.1 / 26.1.1 / 26.1.2 | 101.1 | `v3.1.0` | 原样 | 🟡 同区间外推 |
 | 26.2 | 107.1 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| **26.3** | 121.0 | **`v3.1.0-mc26.3`** | **已按 26.3 schema 修好** | ✅ 12/12 |
+| 26.3 | 121.0 | `v3.1.0-mc26.3` | 已按 26.3 schema 修好 | ✅ 12/12 |
 | 1.21.4 及更低 | ≤ 61 | ❌ 不支持 | — | — |
 
-**为什么必须拆两份**：26.3 把 `enchantment` 注册表的 JSON 形状改了
-（`condition` → `type`、`requirements` 由**数组**变**单体对象**），
-同一份 JSON 无法同时满足两侧。**命令层两份逐字节相同**，差异只有
+为什么必须拆两份：26.3 把 `enchantment` 注册表的 JSON 形状改了
+（`condition` → `type`、`requirements` 由数组变单体对象），
+同一份 JSON 无法同时满足两侧。命令层两份逐字节相同，差异只有
 `pack.mcmeta` + `enchantment/vitality.json` 两个文件。
 
 > ⚠️ **在 26.3 上装 `v3.1.0`（那份给 1.21.5–26.2 的）会让服务器直接起不来** ✗
-> —— 报 `Registry loading errors: doom.virtual.health:vitality`。
+>，报 `Registry loading errors: doom.virtual.health:vitality`。
 > 26.3 请务必用 `v3.1.0-mc26.3`。
 
 | 其他 | 能不能用 |
 |---|---|
 | 单人存档 / 服务器 | 都行；服务器用 `world/datapacks/` |
-| 实验性玩法 | **不需要开任何实验性玩法** |
+| 实验性玩法 | 不需要开任何实验性玩法 |
 
-完整的版本矩阵、升级/降级与"改哪些文件要重启服务器"见 [`docs/04-兼容与版本.md`](docs/04-兼容与版本.md)。
+完整的版本矩阵、升级/降级与“改哪些文件要重启服务器”见 [`docs/04-兼容与版本.md`](docs/04-兼容与版本.md)。
 版本号规则（`vX.Y.Z`、什么时候升哪一位）也写在那一页。
 
 ## 快速开始
@@ -178,7 +178,7 @@ dvh.damage_mult 默认 1000 = 100% 伤害
   mult=2000 → 200% 伤害（易伤）
 ```
 
-**精度：0.001 HP**（mHP）。余数补偿保证长期累计不丢失。
+精度：0.001 HP（mHP）。余数补偿保证长期累计不丢失。
 
 ---
 
@@ -215,7 +215,7 @@ dvh.damage_mult 默认 1000 = 100% 伤害
 | `debug` | (无) | 打印详细调试信息（含 bossbar / on_death） |
 | `dvhentity` | `{target}` | 向指定玩家打印实体状态（`{target:"@s"}`） |
 
-**单位说明**：`points` / `health` / `max_health` 均为 **HP 单位**（内部自动 ×1000 转 mHP，支持小数如 `points:-0.5`）。mHP 版本 API 直接返回原始毫值。
+单位说明：`points` / `health` / `max_health` 均为 HP 单位（内部自动 ×1000 转 mHP，支持小数如 `points:-0.5`）。mHP 版本 API 直接返回原始毫值。
 
 ### doom.bossbar
 
@@ -237,11 +237,11 @@ dvh.damage_mult 默认 1000 = 100% 伤害
 | `targets` | string | `"@a"` | 可见玩家选择器 |
 | `persist` | bool | `false` | 实体死亡后是否保留血条 |
 
-**persist 说明**：`persist:1b` 时实体失去 VH 标签后血条不自动删除（用于延迟清理或跨重生保留）。
+persist 说明：`persist:1b` 时实体失去 VH 标签后血条不自动删除（用于延迟清理或跨重生保留）。
 
 ### predicate 判定
 
-predicate 类函数 `return 1` 表示条件成立。**需要预先设置 `@s dvh.pp` / `@s dvh.pp_max` 计分板**（实体级阈值，[0,100]）。
+predicate 类函数 `return 1` 表示条件成立。需要预先设置 `@s dvh.pp` / `@s dvh.pp_max` 计分板（实体级阈值，[0,100]）。
 
 | 函数 | 判定条件 |
 | ---- | ---- |
@@ -265,9 +265,9 @@ execute as @e[tag=virtual_health_entity] if function doom.virtual.health:api/pre
 
 ## 死亡回调 on_death
 
-**触发时机**：`dvh.health` 降至 0（`trigger_death`）时执行。
+触发时机：`dvh.health` 降至 0（`trigger_death`）时执行。
 
-**用法**：`on_death` 是**任意命令字符串**，以 VH 实体位置执行：
+用法：`on_death` 是任意命令字符串，以 VH 实体位置执行：
 
 ```
 /execute as @e[tag=virtual_health_entity] run function doom.virtual.health:api/create {with:{max_health:100, health:100, on_death:"say I died"}}
@@ -279,15 +279,15 @@ execute as @e[tag=virtual_health_entity] if function doom.virtual.health:api/pre
 /summon minecraft:zombie ~ ~ ~ {data:{dvh:{max_health:100d, health:100d, on_death:"function mypack:boss_death"}}, NoAI:1b}
 ```
 
-**执行语义**：
+执行语义：
 
 - 等价于 `execute at @s run <on_death 命令>`，`@s` 是 VH 实体
-- 因此**不要写 `@s[tag=virtual_health_entity]`**（该选择器在回调执行时已失效），直接写 `@s`
+- 因此不要写 `@s[tag=virtual_health_entity]`（该选择器在回调执行时已失效），直接写 `@s`
 - 回调执行后实体被 `damage out_of_world` 杀死（若未指定归属则直接伤害）
-- 如果 `on_death` 为**空字符串**，视为无回调，直接进入死亡流程
+- 如果 `on_death` 为空字符串，视为无回调，直接进入死亡流程
 - 死亡归属：指定 `on_death` 时跳过 UUID 追踪（`trigger_death` 分支），否则追踪 `last_hurt_by_mob` 并生成 `damage ... by <uuid>` 击杀 credit
 
-**常见写法**：
+常见写法：
 
 ```
 on_death: "say A VH entity has died"
@@ -311,11 +311,11 @@ on_death: "summon minecraft:item ~ ~ ~ {Item:{id:"minecraft:diamond",Count:1b}}"
 
 ## vitality 附魔触发器
 
-**目的**：vitality 附魔挂在实体装备上，让游戏内附魔 tick 驱动装备加成/伤害回调，替代纯命令轮询。
+目的：vitality 附魔挂在实体装备上，让游戏内附魔 tick 驱动装备加成/伤害回调，替代纯命令轮询。
 
 - 附魔文件：`enchantment/vitality.json`（支持槽位：saddle、mainhand）
-- **Riding 实体**（猪/马/驴/骡/骷髅马/僵尸马/骆驼/炽足兽）→ 主手槽
-- **非 Riding 实体** → 鞍槽
+- Riding 实体（猪/马/驴/骡/骷髅马/僵尸马/骆驼/炽足兽）→ 主手槽
+- 非 Riding 实体 → 鞍槽
 - `api/apply_trigger` 自动分配，也可手动调用
 
 vitality 附魔的 `minecraft:tick` effect 驱动 `api/sync/equipment_bonus`：
@@ -324,7 +324,7 @@ vitality 附魔的 `minecraft:tick` effect 驱动 `api/sync/equipment_bonus`：
 - 汇总加成 → 同步到 `dvh.max_health`（自动计算 delta，支持加减）
 - 附魔等级 255（max_level），保证物品不会因堆叠丢失
 
-**修改 enchantment JSON 需要重启服务器**（`/reload` 无效）。
+修改 enchantment JSON 需要重启服务器（`/reload` 无效）。
 
 ## 读取血量
 
@@ -380,7 +380,7 @@ execute as @e[tag=virtual_health_entity] run function doom.virtual.health:api/ge
 
 ## 已知 Edge Cases（边界情况）
 
-> ⚠️ **亟待更多玩家测试**：以下是代码审查中识别出的边界情况，部分已在设计中规避，部分受原版机制限制。欢迎在 [Issues](https://github.com/DoomDecapitator/doom.virtual.health/issues) 反馈实测结果。
+> ⚠️ 亟待更多玩家测试：以下是代码审查中识别出的边界情况，部分已在设计中规避，部分受原版机制限制。欢迎在 [Issues](https://github.com/DoomDecapitator/doom.virtual.health/issues) 反馈实测结果。
 
 ### 数值精度类
 
@@ -415,14 +415,14 @@ execute as @e[tag=virtual_health_entity] run function doom.virtual.health:api/ge
 
 ## 注意事项
 
-- `kill` 参数默认 `{kill:1b}`，移除时**会杀死实体**；不想杀用 `{kill:0b}`
-- `on_death` 回调**不要写 `@s[tag=virtual_health_entity]`**（选择器已失效），直接用 `@s`
+- `kill` 参数默认 `{kill:1b}`，移除时会杀死实体；不想杀用 `{kill:0b}`
+- `on_death` 回调不要写 `@s[tag=virtual_health_entity]`（选择器已失效），直接用 `@s`
 - `add_health {points:负数}` 对无敌实体无效；`set_health` 不受无敌影响
 - Bossbar `api/create` 重复调用 return fail
 - `scale` 参数：`scale:1` = mHP，`scale:1000` = HP
-- 修改 enchantment JSON（vitality.json）需要**重启服务器**
+- 修改 enchantment JSON（vitality.json）需要重启服务器
 - 伤害倍率范围 `[1, 100000]`（×1000 标度）
-- **测试反馈渠道**：遇到任何异常请在 [Issues](https://github.com/DoomDecapitator/doom.virtual.health/issues) 提交，附上复现步骤与版本号
+- 测试反馈渠道：遇到任何异常请在 [Issues](https://github.com/DoomDecapitator/doom.virtual.health/issues) 提交，附上复现步骤与版本号
 
 ## 文件结构
 
@@ -433,7 +433,7 @@ variants/
 ```
 
 > `variants/` 只在仓库里用于区分；两个 zip 解压后得到的都是标准数据包目录，
-> **装的时候把解压出来的那个文件夹整体丢进 `datapacks/` 即可**（不要连 `variants/` 一起放）。
+> 装的时候把解压出来的那个文件夹整体丢进 `datapacks/` 即可（不要连 `variants/` 一起放）。
 
 ```
 doom.virtual.health/                ← 数据包本体（zip 内顶层也是这个名字）
@@ -452,7 +452,7 @@ doom.virtual.health/                ← 数据包本体（zip 内顶层也是这
     └── doom.bossbar/function/      ← __load__ / __unload__ / __help__ · core/ · api/ · internal/
 ```
 
-仓库顶层另外这些是**给玩家的**，不在 zip 里：`README.md`（本文件）· `CHANGELOG.md`（逐版变更）· `dist/`（成品 zip + 校验值）·
+仓库顶层另外这些是给玩家的，不在 zip 里：`README.md`（本文件）· `CHANGELOG.md`（逐版变更）· `dist/`（成品 zip + 校验值）·
 `docs/`（玩家手册）· `LICENSE` · `.github/`（Issue 表单）。
 
 ## 文档在哪
@@ -468,9 +468,9 @@ doom.virtual.health/                ← 数据包本体（zip 内顶层也是这
 | 全部文档索引 | [`docs/README.md`](docs/README.md) |
 | 首屏那张图怎么拍 | [`docs/图-首屏效果位.md`](docs/图-首屏效果位.md) |
 
-> **图文文档站（GitHub Pages）**：<https://doomdecapitator.github.io/doom.virtual.health/> ——
+> 图文文档站（GitHub Pages）：<https://doomdecapitator.github.io/doom.virtual.health/> ——
 > 就是仓库 `docs/index.html`，随本仓库一起发布；打不开时，`docs/` 里的 Markdown 手册内容一致。
 
 ## 许可
 
-[MIT](LICENSE) —— 随便用、随便改、随便打包进整合包，保留版权声明即可。
+[MIT](LICENSE)，随便用、随便改、随便打包进整合包，保留版权声明即可。
