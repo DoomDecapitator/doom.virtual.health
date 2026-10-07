@@ -170,7 +170,7 @@ GitHub 上的包体停在 2026-08-05（`v3.0` 那次合并），工作区那一�
 - 合并“DVH v3.0 unified”：实体级百分比阈值 `dvh.pp` / `dvh.pp_max`、`auto_create` 宏、
   `pack_format` 升到 81（1.21.7 / 1.21.8）、`damage_mult` 补上限保护（H7）。
 - 同日的两次提交补齐文档：完整 API 参考、`on_death` 章节、vitality 与 predicate 说明；修掉 `auto_init` 对 double 的处理
-  （改用 `data get`，兼容 double / int / string），并补上"已知 Edge Cases"章节。
+  （改用 `data get`，兼容 double / int / string），并补上“已知 Edge Cases”章节。
 - 这个标签没有附带 zip。想用这一版请下载 [`v3.0.0`](https://github.com/DoomDecapitator/doom.virtual.health/releases/tag/v3.0.0)。
 
 ## v2.x 及更早

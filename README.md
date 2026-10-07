@@ -12,7 +12,7 @@
 > 自动映射到 Bossbar 血条；配 `auto_init`（`/summon` 直接带 NBT）、非侵入 tick 伤害检测、死亡回调 `on_death`、
 > 百分比血量判定、无敌控制、伤害倍率、按比例回血。零 Mod、零外部依赖。
 >
-> 下哪个：见下面「MC 版本 → 用哪份变体」—— 1.21.5 – 26.2 用 `dist/doom.virtual.health-v3.1.0.zip`；26.3 用 `dist/doom.virtual.health-v3.1.0-mc26.3.zip`。
+> 下哪个：见下面「MC 版本 → 用哪份变体」。1.21.5 – 26.2 用 `dist/doom.virtual.health-v3.1.0.zip`；26.3 用 `dist/doom.virtual.health-v3.1.0-mc26.3.zip`。
 >
 > 怎么装：解压 zip → 得到 `doom.virtual.health/` 文件夹 → 整个丢进 `saves/<你的存档>/datapacks/`（服务器：`world/datapacks/`）
 > → 进游戏 `/reload`。就这三步。
@@ -28,7 +28,7 @@
 > 玩法行为与 v3.0.0 完全一致（63 个 mcfunction 一字未改）。这一版改的是能不能装上去：
 > 26.3 改了 `enchantment` 注册表的 JSON 形状，旧写法会让服务器直接起不来 ✗，已修好并真机复验。
 > 三台实测全绿：1.21.5 / 1.21.10 / 26.3 各 12/12 断言通过 · 8 类加载错误全 0 ✓
-> 包内的 `pack.mcmeta` 描述串仍写着 "DVH v3.0"，那是同一个版本，不是旧包。
+> 包内的 `pack.mcmeta` 描述串仍写着 “DVH v3.0”，那是同一个版本，不是旧包。
 > 可以装进存档玩，但请先备份存档。
 
 ---
@@ -53,7 +53,7 @@
 → `logs/latest.log` 里有没有 `Failed to load function` → 有没有 `/reload`。
 
 要卸载：先 `/function doom.virtual.health:__unload__` 把所有虚拟血量实体摘干净，再删掉 `datapacks/doom.virtual.health/` → `/reload`。
-细一点的安装步骤（含"包放哪儿、服务器怎么放、版本不符怎么判"）见 [`docs/01-安装.md`](docs/01-安装.md)。
+细一点的安装步骤（含“包放哪儿、服务器怎么放、版本不符怎么判”）见 [`docs/01-安装.md`](docs/01-安装.md)。
 
 ## 校验下载的文件（一行）
 
@@ -79,7 +79,7 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 
 | 文件 | 里面是什么 | 适合谁 |
 |---|---|---|
-| **`dist/doom.virtual.health-v3.1.0.zip`**（1.21.5 – 26.2） | 完整的 `doom.virtual.health/` 数据包：**92 个文件**（64 个 `.mcfunction` + 24 个 `.json` + 3 个 `.mcdoc` + `pack.mcmeta` + 包内 README），含两个命名空间，`doom.virtual.health`（虚拟血量核心）与 `doom.bossbar`（血条联动，可选，不接也不影响本体） | **1.21.5 – 26.2**，绝大多数人下这个 |
+| `dist/doom.virtual.health-v3.1.0.zip`（1.21.5 – 26.2） | 完整的 `doom.virtual.health/` 数据包：92 个文件（64 个 `.mcfunction` + 24 个 `.json` + 3 个 `.mcdoc` + `pack.mcmeta` + 包内 README），含两个命名空间，`doom.virtual.health`（虚拟血量核心）与 `doom.bossbar`（血条联动，可选，不接也不影响本体） | 1.21.5 – 26.2，绝大多数人下这个 |
 | `dist/doom.virtual.health-v3.1.0-mc26.3.zip`（仅 26.3） | 同一套命令，附魔 JSON 按 26.3 新 schema 修好（`condition`→`type`、`requirements` 数组→单体） | 只在 26.3 上用。26.3 上装上面那份会**让服务器起不来** ✗ |
 
 ## 它给你什么（核心特性）
@@ -119,8 +119,8 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 `pack.mcmeta` + `enchantment/vitality.json` 两个文件。
 
 > ⚠️ **在 26.3 上装 `v3.1.0`（那份给 1.21.5–26.2 的）会让服务器直接起不来** ✗
->，报 `Registry loading errors: doom.virtual.health:vitality`。
-> 26.3 请务必用 `v3.1.0-mc26.3`。
+> 报 `Registry loading errors: doom.virtual.health:vitality`。
+> 26.3 请用 `v3.1.0-mc26.3`。
 
 | 其他 | 能不能用 |
 |---|---|
@@ -452,7 +452,7 @@ doom.virtual.health/                ← 数据包本体（zip 内顶层也是这
     └── doom.bossbar/function/      ← __load__ / __unload__ / __help__ · core/ · api/ · internal/
 ```
 
-仓库顶层另外这些是给玩家的，不在 zip 里：`README.md`（本文件）· `CHANGELOG.md`（逐版变更）· `dist/`（成品 zip + 校验值）·
+仓库顶层这些是给玩家的，不在 zip 里：`README.md`（本文件）· `CHANGELOG.md`（逐版变更）· `dist/`（成品 zip + 校验值）·
 `docs/`（玩家手册）· `LICENSE` · `.github/`（Issue 表单）。
 
 ## 文档在哪
@@ -468,7 +468,7 @@ doom.virtual.health/                ← 数据包本体（zip 内顶层也是这
 | 全部文档索引 | [`docs/README.md`](docs/README.md) |
 | 首屏那张图怎么拍 | [`docs/图-首屏效果位.md`](docs/图-首屏效果位.md) |
 
-> 图文文档站（GitHub Pages）：<https://doomdecapitator.github.io/doom.virtual.health/> ——
+> 图文文档站（GitHub Pages）：<https://doomdecapitator.github.io/doom.virtual.health/>。
 > 就是仓库 `docs/index.html`，随本仓库一起发布；打不开时，`docs/` 里的 Markdown 手册内容一致。
 
 ## 许可
