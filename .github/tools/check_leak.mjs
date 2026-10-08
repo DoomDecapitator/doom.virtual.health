@@ -40,8 +40,14 @@ const IDS = [
   /\bbdengine\b/i,
   /All-Rights-Reserved/i,                 // 第三方许可标识（本项目用的是 MIT）
 ];
-// 本文件正文里就写着上面这些正则 ⇒ 自己跳过
+// 本文件与 CI 工作流里会复述上面的正则 / 路径模式（为说明「门在防什么」）⇒ 这些行豁免。
+// ⚠️ 2026-10-08 实测踩过：static.yml 的注释里写了 `_work/ports`，被本门当成真泄漏、
+//    CI 直接红（本地当时还没写 yml，所以没暴露）。
+//
+// 豁免粒度是【行】而不是【文件】：只放过注释行（`#` / `//` 开头）。
+// 这样 workflow 的 YAML 正文（run: 那几行、env 值）仍然全查 —— 那里出现真路径就是要拦。
 const SELF = ['.github/tools/check_leak.mjs'];
+const isCommentLine = (line) => /^\s*(#|\/\/)/.test(line);
 
 const ALLOW = new Set(['README.md', 'LICENSE', 'CHANGELOG.md', '.gitignore', '.gitattributes',
   'dist', 'docs', '.github', 'doom.virtual.health', 'variants']);
@@ -70,14 +76,19 @@ try {
 console.log('仓库根：' + ROOT);
 
 // ---- ① 泄漏扫描 ----
+// 逐行扫，注释行豁免（见 SELF 处的说明）。非注释行照旧全查。
 const leaks = [];
 for (const rel of tracked) {
   if (SELF.includes(rel)) continue;
   let t;
   try { t = fs.readFileSync(path.join(ROOT, rel), 'utf8'); } catch { continue; }
-  for (const re of IDS) {
-    const m = t.match(re);
-    if (m) leaks.push('   ' + rel + ' :: ' + re.source.slice(0, 60) + '  命中「' + m[0].slice(0, 40) + '」');
+  const lines = t.split(/\r?\n/);
+  for (const [i, line] of lines.entries()) {
+    if (isCommentLine(line)) continue;
+    for (const re of IDS) {
+      const m = line.match(re);
+      if (m) leaks.push('   ' + rel + ':' + (i + 1) + ' :: ' + re.source.slice(0, 46) + '  命中「' + m[0].slice(0, 40) + '」');
+    }
   }
 }
 if (leaks.length) {
@@ -85,7 +96,7 @@ if (leaks.length) {
   leaks.slice(0, 20).forEach((l) => console.log(l));
   failed++;
 } else {
-  console.log('✅ 泄漏检查：0 处（' + tracked.length + ' 个已跟踪文件里无本机绝对路径 / 无开发物标识）');
+  console.log('✅ 泄漏检查：0 处（' + tracked.length + ' 个已跟踪文件的非注释行里无本机绝对路径 / 无开发物标识）');
 }
 
 // ---- ② 顶层结构 ----
