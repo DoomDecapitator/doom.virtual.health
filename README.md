@@ -8,28 +8,44 @@
      存成 docs/assets/首屏效果.png，然后把下面这行的注释去掉。在那之前不要留半张破图。 -->
 <!-- <p align="center"><img src="docs/assets/首屏效果.png" width="720" alt="doom.virtual.health 在存档里跑起来的样子"></p> -->
 
-> 这是什么：用纯数据包给实体注入一套独立于原版血量的虚拟血量，血量以 0.001 HP（mHP）为单位、上限随便开到 95325 HP，
-> 自动映射到 Bossbar 血条；配 `auto_init`（`/summon` 直接带 NBT）、非侵入 tick 伤害检测、死亡回调 `on_death`、
-> 百分比血量判定、无敌控制、伤害倍率、按比例回血。零 Mod、零外部依赖。
->
-> 下哪个：见下面「MC 版本 → 用哪份变体」。1.21.5 – 26.2 用 `dist/doom.virtual.health-v3.1.0.zip`；26.3 用 `dist/doom.virtual.health-v3.1.0-mc26.3.zip`。
->
-> 怎么装：解压 zip → 得到 `doom.virtual.health/` 文件夹 → 整个丢进 `saves/<你的存档>/datapacks/`（服务器：`world/datapacks/`）
-> → 进游戏 `/reload`。就这三步。
->
-> 怎么验：下载后先对一下校验值，见下面「校验下载的文件」。
->
-> 图文站点：<https://doomdecapitator.github.io/doom.virtual.health/>，就是仓库里的 `docs/index.html`，随本仓库一起发布，不另存一份。
->
-> 源码在哪：这个包没有生成器，源码就是 [`doom.virtual.health/`](doom.virtual.health) 里那 63 个 mcfunction 本体，
-> 点开就能逐个读；zip 里的文件与它逐字节相同（见下）。
+用纯数据包给实体注入一套独立于原版血量的虚拟血量。
 
-> ## 当前状态：v3.1.0 正式发布（Latest），多版本支持 1.21.5 → 26.3
-> 玩法行为与 v3.0.0 完全一致（63 个 mcfunction 一字未改）。这一版改的是能不能装上去：
-> 26.3 改了 `enchantment` 注册表的 JSON 形状，旧写法会让服务器直接起不来 ✗，已修好并真机复验。
-> 三台实测全绿：1.21.5 / 1.21.10 / 26.3 各 12/12 断言通过 · 8 类加载错误全 0 ✓
-> 包内的 `pack.mcmeta` 描述串仍写着 “DVH v3.0”，那是同一个版本，不是旧包。
-> 可以装进存档玩，但请先备份存档。
+血量以 0.001 HP（mHP）为单位，上限可以开到 95325 HP，自动映射到 Bossbar 血条。配套能力有 `auto_init`（`/summon` 直接带 NBT）、非侵入 tick 伤害检测、死亡回调 `on_death`、百分比血量判定、无敌控制、伤害倍率、按比例回血。零 Mod，零外部依赖。
+
+## 下载哪个
+
+| 你的 MC 版本 | 下这个 |
+|---|---|
+| 1.21.5 – 26.2 | `dist/doom.virtual.health-v3.1.0.zip` |
+| 26.3 | `dist/doom.virtual.health-v3.1.0-mc26.3.zip` |
+
+见下面「MC 版本 → 用哪份变体」。
+
+## 安装
+
+1. 解压 zip，得到一个 `doom.virtual.health/` 文件夹
+2. 整个文件夹放进 `saves/<你的存档>/datapacks/`。服务器放 `world/datapacks/`
+3. 进游戏跑 `/reload`
+
+下载后建议先对一下校验值，见「校验下载的文件」。
+
+图文站点在 <https://doomdecapitator.github.io/doom.virtual.health/>，就是仓库里的 `docs/index.html`，随本仓库一起发布，不另存一份。
+
+## 源码在哪
+
+这个包没有生成器。源码就是 [`doom.virtual.health/`](doom.virtual.health) 里那 63 个 mcfunction 本体，点开就能逐个读。zip 里的文件与它逐字节相同。
+
+## 当前状态
+
+**v3.1.0 正式发布（Latest）**，支持 Minecraft 1.21.5 到 26.3。
+
+玩法行为与 v3.0.0 完全一致（63 个 mcfunction 一字未改）。这一版改的是能不能装上去：26.3 改了 `enchantment` 注册表的 JSON 形状，旧写法会让服务器直接起不来，已修好并真机复验。
+
+三台实测全绿：1.21.5 / 1.21.10 / 26.3 各 12/12 断言通过，8 类加载错误全 0。
+
+包内的 `pack.mcmeta` 描述串仍写着「DVH v3.0」，那是同一个版本，不是旧包。
+
+可以装进存档玩，但请先备份存档。
 
 ---
 
@@ -71,9 +87,7 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 | `doom.virtual.health-v3.1.0.zip`（1.21.5–26.2） | `cd556d2b946fb4a8c24a37c242c4e0cedf6f9eb3d296614c0ad17af02032145b` |
 | `doom.virtual.health-v3.1.0-mc26.3.zip`（仅 26.3） | `51bcccbc04d4742c689140863c166aa50e13a683c587735f4e4f741344db8816` |
 
-> 这个值不是手抄的：`tools/build_dist.py` 打完 zip 会回读每一个条目与仓库 [`doom.virtual.health/`](doom.virtual.health) 下的同名文件逐字节比，
-> 不一致就报错退出；`tools/verify.py` 再把 `SHA256SUMS.txt` / zip / 包体三方对一遍。
-> 你重新打包得到的 hash 应当与上表完全相同。
+这个值不是手抄的。`tools/build_dist.py` 打完 zip 会回读每一个条目，与仓库 [`doom.virtual.health/`](doom.virtual.health) 下的同名文件逐字节比，不一致就报错退出。`tools/verify.py` 再把 `SHA256SUMS.txt`、zip、包体三方对一遍。你重新打包得到的 hash 应当与上表完全相同。
 
 ## 我该下载哪个
 
@@ -103,22 +117,22 @@ Windows PowerShell:   (Get-FileHash .\doom.virtual.health-v3.1.0.zip -Algorithm 
 
 | MC 版本 | data format | 用哪份 | 附魔 JSON | 实测 |
 |---|---|---|---|---|
-| 1.21.5 | 71 | `v3.1.0` | 原样 | ✅ 12/12 |
-| 1.21.6 | 80 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| 1.21.7 / 1.21.8 | 81 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| 1.21.9 / 1.21.10 | 88.0 | `v3.1.0` | 原样 | ✅ 12/12（1.21.10） |
-| 1.21.11 | 94.1 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| 26.1 / 26.1.1 / 26.1.2 | 101.1 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| 26.2 | 107.1 | `v3.1.0` | 原样 | 🟡 同区间外推 |
-| 26.3 | 121.0 | `v3.1.0-mc26.3` | 已按 26.3 schema 修好 | ✅ 12/12 |
-| 1.21.4 及更低 | ≤ 61 | ❌ 不支持 | — | — |
+| 1.21.5 | 71 | `v3.1.0` | 原样 | 12/12 实测 |
+| 1.21.6 | 80 | `v3.1.0` | 原样 | 未单独实测，按同区间外推 |
+| 1.21.7 / 1.21.8 | 81 | `v3.1.0` | 原样 | 未单独实测，按同区间外推 |
+| 1.21.9 / 1.21.10 | 88.0 | `v3.1.0` | 原样 | 12/12 实测（1.21.10） |
+| 1.21.11 | 94.1 | `v3.1.0` | 原样 | 未单独实测，按同区间外推 |
+| 26.1 / 26.1.1 / 26.1.2 | 101.1 | `v3.1.0` | 原样 | 未单独实测，按同区间外推 |
+| 26.2 | 107.1 | `v3.1.0` | 原样 | 未单独实测，按同区间外推 |
+| 26.3 | 121.0 | `v3.1.0-mc26.3` | 已按 26.3 schema 修好 | 12/12 实测 |
+| 1.21.4 及更低 | ≤ 61 | 不支持 | — | — |
 
 为什么必须拆两份：26.3 把 `enchantment` 注册表的 JSON 形状改了
 （`condition` → `type`、`requirements` 由数组变单体对象），
 同一份 JSON 无法同时满足两侧。命令层两份逐字节相同，差异只有
 `pack.mcmeta` + `enchantment/vitality.json` 两个文件。
 
-> ⚠️ **在 26.3 上装 `v3.1.0`（那份给 1.21.5–26.2 的）会让服务器直接起不来** ✗
+> ⚠️ **在 26.3 上装 `v3.1.0`（那份给 1.21.5–26.2 的）会让服务器直接起不来**。
 > 报 `Registry loading errors: doom.virtual.health:vitality`。
 > 26.3 请用 `v3.1.0-mc26.3`。
 
@@ -386,11 +400,11 @@ execute as @e[tag=virtual_health_entity] run function doom.virtual.health:api/ge
 
 | # | 场景 | 表现 | 规避建议 |
 |---|------|------|---------|
-| E1 | `auto_init` 的 NBT 用 double（如 `40d`） | 旧版宏展开 `40.0` 会 scoreboard 报错 | ✅ 已修复为 `data get` 版（兼容 double/int/string） |
+| E1 | `auto_init` 的 NBT 用 double（如 `40d`） | 旧版宏展开 `40.0` 会 scoreboard 报错 | 已修复为 `data get` 版（兼容 double/int/string）|
 | E2 | `get_percentage` 血量 < 1 HP | 整数除法，<1 HP 时百分比可能显示 0 | 低血量请用 `get_health_mhp` 精确读取 |
 | E3 | `get_percentage` / `get_stats` 的 scale | `scale:0` 会除零报错 | 使用 `scale:1`（mHP）或 `scale:1000`（HP） |
-| E4 | `add_health` 大量治疗 | 钳制到 `max_health`，不会溢出 | ✅ 已内置 `#max_safe` 溢出保护 |
-| E5 | `damage_mult` 上限 | 最高 100000（×100 = 10000%） | ✅ 已内置上限保护 |
+| E4 | `add_health` 大量治疗 | 钳制到 `max_health`，不会溢出 | 已内置 `#max_safe` 溢出保护 |
+| E5 | `damage_mult` 上限 | 最高 100000（×100 = 10000%） | 已内置上限保护 |
 
 ### 机制限制类（原版限制，无法规避）
 
@@ -432,8 +446,7 @@ variants/
 └── doom.virtual.health-26.3/       ← 26.3 专用变体（命令层同上逐字节相同，多改一处附魔 JSON）
 ```
 
-> `variants/` 只在仓库里用于区分；两个 zip 解压后得到的都是标准数据包目录，
-> 装的时候把解压出来的那个文件夹整体丢进 `datapacks/` 即可（不要连 `variants/` 一起放）。
+`variants/` 只在仓库里用于区分。两个 zip 解压后得到的都是标准数据包目录，装的时候把解压出来的那个文件夹整体丢进 `datapacks/` 即可（不要连 `variants/` 一起放）。
 
 ```
 doom.virtual.health/                ← 数据包本体（zip 内顶层也是这个名字）
@@ -468,8 +481,7 @@ doom.virtual.health/                ← 数据包本体（zip 内顶层也是这
 | 全部文档索引 | [`docs/README.md`](docs/README.md) |
 | 首屏那张图怎么拍 | [`docs/图-首屏效果位.md`](docs/图-首屏效果位.md) |
 
-> 图文文档站（GitHub Pages）：<https://doomdecapitator.github.io/doom.virtual.health/>。
-> 就是仓库 `docs/index.html`，随本仓库一起发布；打不开时，`docs/` 里的 Markdown 手册内容一致。
+图文文档站在 <https://doomdecapitator.github.io/doom.virtual.health/>，就是仓库 `docs/index.html`，随本仓库一起发布。打不开时，`docs/` 里的 Markdown 手册内容一致。
 
 ## 许可
 
